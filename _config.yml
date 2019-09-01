@@ -1,9 +1,9 @@
-title: Mekyll theme demo
-email: 
+title: 猫说
+email: 路虽远，行则必至。
 description: >
   Mekyll - Medium-style theme for Jekyll
 baseurl: "/catsaid" # the subpath of your site, e.g. /blog
-url: "http://ifedyukin.github.io" # the base hostname & protocol for your site
+url: "https://oldpubcat.github.io" # the base hostname & protocol for your site
 postCount: 5 # the number of posts on the "index" page
 
 # Build settings
