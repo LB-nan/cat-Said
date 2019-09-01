@@ -33,7 +33,7 @@ pre {
   overflow-x: auto;
   border-radius: 3px;
   padding: 8px 12px;
-  background-color: #efefef;
+  background-color: #efefef !important;
   color: #060600;
   box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
 }
