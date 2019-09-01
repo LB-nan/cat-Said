@@ -33,12 +33,12 @@ pre {
   overflow-x: auto;
   border-radius: 3px;
   padding: 8px 12px;
-  background-color: #272822;
-  color: #f8f8f2;
+  background-color: #efefef;
+  color: #060600;
 }
 
 pre > code {
-  background-color: #272822;
+  background-color: #efefef;
   border: 0;
   padding-right: 0;
   padding-left: 0;
