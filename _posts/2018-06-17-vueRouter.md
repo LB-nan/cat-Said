@@ -82,10 +82,15 @@ Home是引入的一个组件，想渲染哪个组件引入哪个：`import Home 
 
 11、router-link的配置
 ① 动态插入url： `<router-link :to="url" > home </router-link> `
+
 ② 对象形式： `<router-link :to="{path: '/'}" > home </router-link> `
+
 ③ 改变默认的标签，router-link 渲染出来默认的是a标签， 可以修改 `<router-link :to="url" tag="div" > home </router-link> `
+
 ④ router-link的点击态的样式类名设置： 全局设置的话需要在路由实例里面配置`const router = new VueRouter({ linkActiveClass: 'activeName' })`, 单个router-link配置的话 `<router-link :to="url" tag="div" active-class="className" > home </router-link>` 
+
 ⑤ 改变事件触发： `<router-link event="mouseover" > home </router-link>`
+
 
 12、重定向：
 ```
