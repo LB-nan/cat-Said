@@ -4,7 +4,7 @@ description: >
   路虽远，行则必至。
 baseurl: "/catsaid" # the subpath of your site, e.g. /blog
 url: "https://oldpubcat.github.io" # the base hostname & protocol for your site
-postCount: 5 # the number of posts on the "index" page
+postCount: 10 # the number of posts on the "index" page
 
 # Build settings
 markdown: redcarpet
