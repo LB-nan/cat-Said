@@ -1,0 +1,75 @@
+---
+layout: post
+title: DOM小总结
+---
+
+DOM的等级
+
+### 1.Dom事件流
+
+DOM事件流分成了三个阶段：事件捕获阶段、处于目标身上阶段、事件冒泡阶段。
+
+### 2.DOM 0 1  级简述
+DOM 0级就是指官方没有形成标准的时候; DOM1级1998年10月成为W3C的推荐标准。DOM1级由两个模块组成：DOM核心（DOM Core）和DOM HTML。DOM2级就是现在的了。
+
+
+### 3.DOM 2级
+
+DOM2级事件处理程序定义了两个方法，用于处理指定和删除事件处理程序。方法接受3个参数，要处理的事件名，事件处理函数，布尔值（true表示在捕获阶段就就执行函数，false表示在事件冒泡阶段）默认是事件冒泡；当然这两个方法还是和IE没什么关系，它有自己的东西。
+
+1. addEventListener(): 可以添加多个同类型事件，执行顺序按添加顺序走
+
+```
+  var btn1 = document.getElementById("btn");
+  btn1.addEventListener("click",function(){alert("hi");},false);
+  btn1.addEventListener("click",function(){alert("en");},false);
+  //执行结果：hi~en
+```
+
+2. removeEventListener():addEventListener()添加的事件只能通过
+removeEventListener()移除，而且该方法不支持移除匿名函数，如上面的例子是移除不成功的。
+
+```
+  var btn1 = document.getElementById("btn");
+  btn1.addEventListener("click",function(){alert("hi");},false);
+  btn1.removeEventListener("click",function(){alert("hi");},false); //不好使，无效
+  修改：
+  var btn1 = document.getElementById("btn");
+  function removeEvent () { alert( "hi"); } //定义一个函数
+  btn1.addEventListener("click",removeEvent,false);
+  btn1.removeEventListener("click",removeEvent,false); //可以了
+```
+
+3. IE实现的方法是attachEvent()和detachEvent()，IE低版本只支持事件冒泡，所有这两个方法都只有两个参数，和标准浏览器方法的区别：第一个参数，就是事件名字，IE需要加on
+
+```
+  btn1.attachEvent("onclick",Fun);
+  btn1.detachEvent("onclick",Fun);
+```
+
+### 4、DOM节点关系
+
+1. 每个节点都有一个childNode属性，里面保存着一个nodeList对象。nodeList是一种类数组的对象，保存一组有序的节点，可以通过下标（类似数组访问方法childNode[i]）或者.item()方法访问子节点，nodeList也有length属性（动态的），但他并不是数组，可以使用Array.prototype.slice()方法将其转换为数组（IE8之前不可以）。
+
+2. 每个节点都有一个parentNode属性，指向父节点。同一个childNodes列表中的所有节点都有一个共同的父节点。 同一个childNodes里面的每个节点之间互为兄弟节点，可以使用previousSibling和nextSibling属性访问。childNodes列中中的第一个节点的previousSibling属性为空，最后一个节点的nextSibling为空，如果childNodes只有一个节点那么previousSibling和nextSibling属性都为空；在父节点可以直接使用firstChild和lastChild属性找到第一个和最后一个节点，如果没有子节点，则这俩属性的值为空；可以使用hasChildNodes()方法判断是否有子节点，如果返回true则表示有子节点。
+
+3. 所有的节点都有一个属性：ownerDocument，该属性指向整个文档的文档节点。可以用这个属性直接回到文档树顶部。
+
+
+### 5、操控节点
+
+1. appendChild()用于向childNodes列表的末尾添加一个节点。
+
+2. insertBefore() 接受两个参数，要插入的节点和参照节点，插入的节点会放在参照节点前面,并且和参照节点成为兄弟节点。
+
+3. replaceChild()；接受两个参数，要插入的节点和要被替换掉的节点；被替换掉的节点还存在，但是不显示，方法返回被替换的节点。
+
+4. removeChild()方法接受一个参数即要移除的节点，被移除的节点作为方法的返回值 ，与替换一样，被移除的节点还存在与文档里面，但是不显示。
+
+5. cloneNode():用于创建调用这个方法的节点的另一个完全相同的副本。方法接受一个参数，表示是否执行深复制，参数是true的情况下执行深复制（节点和子元素都复制），false的情况下执行浅复制（只复制当前节点）。
+
+
+
+
+
+
