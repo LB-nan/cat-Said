@@ -7,7 +7,7 @@ url: "https://oldpubcat.github.io" # the base hostname & protocol for your site
 postCount: 10 # the number of posts on the "index" page
 
 # Build settings
-markdown: redcarpet
+markdown: kramdown
 markdown_ext:  markdown,mkdown,mkdn,mkd,md
 permalink   : /:year/:title/
 source: ./
