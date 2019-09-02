@@ -269,5 +269,6 @@ body * {
 
     #header__nav {
         padding-left: 15px;
+        box-sizing: border-box;
     }
 }
