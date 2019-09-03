@@ -2,7 +2,7 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:"" 
-url: https://www.catsaid.cn/
+url: https://www.catsaid.cn
 date_format: "ordinal"
 title: 猫说
 subtitle: "路虽远，行则必至。"
