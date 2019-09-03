@@ -1,6 +1,9 @@
 ---
 layout: post
 title: vue router
+categories: vue
+description: 字符串方法
+keywords: vue, javascript
 ---
 
 

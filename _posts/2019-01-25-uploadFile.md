@@ -1,6 +1,9 @@
 ---
 layout: post
 title: 多文件上传进度监测
+categories: javascript
+description: 多文件上传进度监测
+keywords: javascript, Progress, uoloadFile
 ---
 
 

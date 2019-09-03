@@ -1,6 +1,9 @@
 ---
 layout: post
 title: 多指兼容
+categories: javascript
+description: 字符串方法
+keywords: javascript, mobile, 移动端
 ---
 
 多指兼容小结

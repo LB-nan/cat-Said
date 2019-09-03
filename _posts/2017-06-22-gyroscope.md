@@ -1,6 +1,9 @@
 ---
 layout: post
 title: 陀螺仪
+categories: javascript
+description: 字符串方法
+keywords: javascript, mobile, 移动端
 ---
 
 陀螺仪小结
