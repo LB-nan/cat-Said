@@ -1,7 +1,7 @@
 # ---------------- #
 #   Main Configs   #
 # ---------------- #
-baseurl:
+baseurl:"" 
 url: https://www.catsaid.cn/
 date_format: "ordinal"
 title: 猫说
@@ -10,6 +10,7 @@ description: "猫说_技术分享"
 keywords: 猫说, catsaid, oldpubcat, 前端
 timezone: Asia/Shanghai
 encoding: "utf-8"
+postCount: 10
 side_bar_repo_limit: 5
 
 # ---------------- #
