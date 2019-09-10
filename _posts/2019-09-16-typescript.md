@@ -18,6 +18,16 @@ typescript学习笔记，跟着学习记录，不断完善。
 
 > typescript是强类型语言。
 
+> 是属于微软的，所以推荐用VSCODE编辑器
+
 安装：`npm install -g typescript`
 
-使用：`tsc tsFileName.ts`
+使用：
+
+> 转换单个文件: `tsc tsFileName.ts`  
+
+> 多个文件：``
+
+
+
+
