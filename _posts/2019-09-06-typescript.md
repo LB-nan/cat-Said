@@ -12,7 +12,7 @@ typescript学习笔记，跟着学习记录，不断完善。
 
 > 一个开源的语言。
 
-> typescript是JavaScript的一个超集。
+> typescript是JavaScript的超集。
 
 > typescript运行在浏览器的话需要一些插件转换，因为浏览器只认前端三剑客。
 
@@ -38,7 +38,6 @@ typescript学习笔记，跟着学习记录，不断完善。
 ### 2、语法规则
 
 1. 不能更改变量为非原有类型的数据。ps: 强类型语言,不会像JavaScript一样进行隐式类型转换。推荐写法：`let num: number = 25;` 把数据类型标注出来，比较清晰。
-2. 
 
 ### 3、基本数据类型
 
