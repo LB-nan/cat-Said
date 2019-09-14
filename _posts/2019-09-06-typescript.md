@@ -84,7 +84,9 @@ typescript学习笔记，跟着学习记录，不断完善。
 可以规定函数的数据类型，如果不定义则默认为any类型，不推荐。
 
 1. 函数的返回值
+
 ```
+
   function returnVal(): number{
     return 22;
   }
@@ -96,7 +98,7 @@ typescript学习笔记，跟着学习记录，不断完善。
   }
 ```
 
-2. 参数类型
+1. 参数类型
 ```
   function sumVal(val1:number, val2:number): number{
     return val1 + val2;
