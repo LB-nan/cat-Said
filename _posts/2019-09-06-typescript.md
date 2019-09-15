@@ -229,3 +229,221 @@ type关键字实现上面的功能，用于应对复杂情况
 
   handleCount.sumValue.count(500);
 ```
+
+### 14、类的属性和方法
+ts的类和es6的大致一致，多了一些类型和关键字
+
+```
+
+  class Person {
+    public name: string;  //共有的  默认是public
+    protected gender: string;  // 受保护的，只能当前类或者其子类使用
+    private age: number = 22; // 私有的 只能当前类使用，子类也不可以
+
+    // 可以在构造函数里面定义变量，就不用在上面定义了，效果是一样的
+    constructor(name: string, gender: string, public nickname: string){
+      this.name = name;
+      this.gender = gender;
+      this.nickname = nickname;
+    }
+
+    setName(name: string) {
+      this.name = name;
+      console.log(this.name);
+    }
+  }
+
+  const person = new Person("cat", "男", "miao~")
+
+  console.log(person.nickname) // miao~
+
+  
+  person.setName("said"); // said
+
+  // 在外部使用person.gender会报错，因为不能在外部访问
+
+```
+
+### 15、类的继承
+
+```
+
+  class Student extends Person{
+    constructor( name: string, nickname: string){
+      super(name, '男', nickname);
+      // 不能调用父类的age属性，因为是私有的。 gender可以。
+    }
+  }
+
+  const student = new Student("cat", "cccc");
+  console.log(student.name, student.nickname); // cat cccc
+
+```
+
+### 16、set get static
+
+1. set get修饰词用于隔离私有属性和可公开属性。
+  
+```
+  class Person1 {
+    private _name: string = 'coral'
+
+    // 私有属性赋值
+    set setName(val: string){
+      this._name = val;
+    }
+
+    get getName(): string{
+      return this._name;
+    }
+
+  }
+
+  let p1 = new Person1();
+
+  console.log(p1.getName) // coral
+
+  p1.setName = 'xrr';
+
+  console.log(p1.getName) // xrr
+```
+
+2. static 静态属性
+
+```
+  class Person1 {
+
+    static PI: number = 3.14;
+
+  }
+
+  console.log(Person1.PI)
+```
+
+### 17、namespace
+
+1. 定义：TypeScript 的命名空间只对外暴露需要在外部访问的对象，防止变量污染，命名空间内的对象通过` export `关键字对外暴露。
+
+```
+  namespace Mymath  {
+    const PI = 3.14;
+
+    export function sumVal(val1: number, val2: number): number{
+      return val1 + val2;
+    }
+  }
+
+  console.log(Mymath.sumVal(5, 10));
+```
+
+2. 使用：文件分离
+
+首先，新建三个文件
+
+文件1 `namespace.ts`
+```
+  console.log(Mymath.sumVal(5, 10));
+  console.log(Mymath.getVal(666));
+```
+
+文件2 `sumVal.ts`
+```
+  namespace Mymath  {
+    export function sumVal(val1: number, val2: number): number{
+      return val1 + val2;
+    }
+  }
+
+```
+
+
+文件3`getVal.ts`
+```
+  namespace Mymath  {
+    export function getVal(val1: number): number{
+      return val1;
+    }
+  }
+
+```
+
+文件合成，打开命令行工具输入
+```
+  tsc --outfile namespaceTest.js sumVal.ts getVal.ts namespace.ts
+```
+`namespaceTest.js` 是另外三个文件要合成的名字。
+
+运行
+```
+  node namespaceTest.js
+  // 15
+  // 666
+```
+`namespaceTest.js` 合成的文件的代码
+
+```
+  var Mymath;
+  (function (Mymath) {
+      function sumVal(val1, val2) {
+          return val1 + val2;
+      }
+      Mymath.sumVal = sumVal;
+  })(Mymath || (Mymath = {}));
+  var Mymath;
+  (function (Mymath) {
+      function getVal(val1) {
+          return val1;
+      }
+      Mymath.getVal = getVal;
+  })(Mymath || (Mymath = {}));
+  console.log(Mymath.sumVal(5, 10));
+  console.log(Mymath.getVal(666));
+```
+
+3. 多重命名空间
+  命名空间里面还有其他命名空间的时候，需要使用`export`把命名空间也暴露出来。
+
+```
+  namespace cat1 {
+    let PI: number = 3.14;
+
+    export function getPI(val: number):number {
+      return val;
+    }
+
+    export namespace cat2 {
+      export function sumVal(val1: number, val2: number): number {
+        return val1 + val2;
+      }
+    }
+  }
+
+  console.log(cat1.getPI(2)); // 2
+  console.log(cat1.cat2.sumVal(1,2)); // 3
+```
+
+
+4. 引入文件
+引入文件可以使用`/// <reference path="filePath" />`语法引入
+
+引入：
+```
+  /// <reference path="getVal.ts" />
+  /// <reference path="sumval.ts"/>
+  console.log(Mymath.sumVal(5, 10));
+  console.log(Mymath.getVal(666));
+```
+
+打包：用引入文件的方式打包就不需要打那么多文件名字了，但是需要注意`--outFile`的`F`是大写的。
+```
+  tsc namespace.ts --outFile namespace.js
+```
+
+运行：
+```
+  node namespace.js
+```
+
+
+
+
