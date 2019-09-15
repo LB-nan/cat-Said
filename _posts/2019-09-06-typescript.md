@@ -98,15 +98,14 @@ typescript学习笔记，跟着学习记录，不断完善。
   }
 ```
 
-1. 参数类型
+a. 参数类型
 ```
   function sumVal(val1:number, val2:number): number{
     return val1 + val2;
   }
 ```
 
-3. 函数类型
-
+b. 函数类型
 ```
   // 定义一个函数类型，参数为两个number类型的参数，返回值也需要为number类型
   let myFunc: (a:number, b:number) => number
@@ -282,7 +281,8 @@ ts的类和es6的大致一致，多了一些类型和关键字
 
 ### 16、set get static
 
-1. set get修饰词用于隔离私有属性和可公开属性。
+#### 16.1 set get
+  修饰词用于隔离私有属性和可公开属性。
   
 ```
   class Person1 {
@@ -308,7 +308,7 @@ ts的类和es6的大致一致，多了一些类型和关键字
   console.log(p1.getName) // xrr
 ```
 
-2. static 静态属性
+#### 16.2 static 静态属性
 
 ```
   class Person1 {
