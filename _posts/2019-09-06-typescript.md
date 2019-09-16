@@ -446,6 +446,75 @@ ts的类和es6的大致一致，多了一些类型和关键字
   node namespace.js
 ```
 
+### 18、模块module
+可以是配置里选择使用`commonjs` or `system` or `amd` or `es2015`...
 
+新建两个文件,`a.ts`, `b.ts`
+
+在`a.ts`里面输入
+
+```
+  export let PI: number = 3.14;
+```
+
+在`b.ts`里面输入
+
+```
+  import {PI} from './module'
+  console.log(PI);
+```
+
+打开命令行工具，编译并运行
+
+```
+  tsc b.ts
+  node b.js //3.14
+```
+上面指的是运行在`node.js`环境里面的，由于js不支持模块化，有一个解决办法就是`system`
+在浏览器环境下运行的话需要在HTML文件里面引入`system.js`的文件
+CDN: `https://cdn.bootcss.com/systemjs/0.21.5/system.js`
+
+在HTML文件下面需要设置一下配置
+```
+  <script>
+    System.config({
+      baseUrl: "/",
+      package: {
+        "/":{
+          "defaultExtension": "js"
+        }
+      }
+    })
+
+    System.import('b.js');
+  </script>
+```
+
+扩展一下写法：
+1. `import * as P from 'b.js'`  调用：`P.PI`
+2. 在导出的地方`export default function sumVal(){....}`； 引入：`import sum from './sumVal'`   调用：`sum(1,2);`
+
+
+### 19、interface  接口
+
+interface 和 type关键字差不多，最大的差别是，interface可以继承，type不可以
+
+```
+  interface Person2 {
+    name: string;
+    age: number;
+    sex?: string;  // ?: 为选填
+    readonly salary: number;  readonly关键字描述的为只读属性
+    [propName: string]: any;  // 任意名字 任意类型的值
+    greet(): void; // 定义一个方法，莫得返回值，有返回值参照上面函数部分设置
+  }
+
+  let person: Person2 = {
+    name: 'catsaid',
+    age: 18
+  }
+
+  console.log(person)
+```
 
 
