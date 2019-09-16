@@ -504,17 +504,27 @@ interface 和 type关键字差不多，最大的差别是，interface可以继�
     name: string;
     age: number;
     sex?: string;  // ?: 为选填
-    readonly salary: number;  readonly关键字描述的为只读属性
+    readonly salary: number;  //readonly关键字描述的为只读属性
     [propName: string]: any;  // 任意名字 任意类型的值
     greet(): void; // 定义一个方法，莫得返回值，有返回值参照上面函数部分设置
   }
 
   let person: Person2 = {
     name: 'catsaid',
-    age: 18
+    age: 18,
+    salary: 1234,
+    id: 9527,
+    greet():void{
+      console.log('hi person');
+    }
   }
+  person.greet(); 
+  console.log(person) 
 
-  console.log(person)
+  // 运行
+  node interface.js
+  // hi person
+  // ....
 ```
 
 
