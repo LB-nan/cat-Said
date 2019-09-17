@@ -530,7 +530,7 @@ interface 和 type关键字差不多，最大的差别是，interface可以继�
 
 ### 20、接口的实现、继承
 
-#### 20.1、 implements： 实现
+#### 20.1 implements： 实现
 
 ```
   interface PersonInterface {
@@ -564,7 +564,7 @@ class 可以同时实现多个interface
   }
 ```
 
-#### 20.2、继承
+#### 20.2 继承
 
 ```
   interface Employee extends PersonInterface{
@@ -577,7 +577,7 @@ class 可以同时实现多个interface
 
 使用泛型来创建可重用的组件，一个组件可以支持多种类型的数据。 这样就可以以自己的数据类型来使用组件。
 
-#### 21.1、 泛型函数
+#### 21.1 泛型函数
 定义一个泛型的函数
 ```
   function identity<T>(arg: T): T {
@@ -597,7 +597,7 @@ class 可以同时实现多个interface
   identity("myString");
 ```
 
-#### 21.2、泛型接口
+#### 21.2 泛型接口
 
 指定成员类型为泛型，或者指定接口类型为泛型
 
@@ -632,7 +632,7 @@ class 可以同时实现多个interface
 
 ```
 
-#### 21.3、为泛型添加约束
+#### 21.3 为泛型添加约束
 
 有时候需要为泛型的添加固定的某个条件,如下必须有一个`length`属性
 
@@ -659,7 +659,7 @@ class 可以同时实现多个interface
   console.log(getLength(objLength)
 ```
 
-#### 21.4、 泛型类
+#### 21.4 泛型类
 和泛型接口差不多
 
 ```
