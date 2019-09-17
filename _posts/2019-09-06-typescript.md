@@ -632,4 +632,63 @@ class 可以同时实现多个interface
 
 ```
 
+#### 21.3、为泛型添加约束
+
+有时候需要为泛型的添加固定的某个条件,如下必须有一个`length`属性
+
+```
+  // 约束了泛型函数的参数里面必须有length属性，类型是any，可以自定义
+  function getLength<T extends {length: any}>(obj: T):any {
+    return obj.length;
+  }
+
+  const objLength = {
+    length: '111'  // 必须带，不带就报错
+  }
+  console.log(getLength(objLength)
+```
+
+也可以指定必须为某种类型
+
+```
+  function getLength<T extends number>(obj: T):any {
+    return obj;
+  }
+
+  let objLength = 22
+  console.log(getLength(objLength)
+```
+
+#### 21.4、 泛型类
+和泛型接口差不多
+
+```
+  class CountNum<T> {
+    num1: T;
+    num2: T;
+
+    constructor(num1: T, num2: T){
+      this.num1 = num1;;
+      this.num2 = num2;
+    }
+
+    sumNum(): number {
+      // +号为必填，不加会报错
+      return +this.num1 + +this.num2;
+    }
+  }
+
+  let countNum = new CountNum<number>(10, 20);
+```
+
+可以为泛型类添加约束
+
+```
+  class CountNum<T extends number>{...}
+
+  // 添加约束，只能传number类型的值，实例化的时候就只能传number了;
+  let countNum =new CountNum<number>(10, 20);
+```
+
+
 
