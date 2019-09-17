@@ -498,6 +498,7 @@ CDN: `https://cdn.bootcss.com/systemjs/0.21.5/system.js`
 ### 19、interface  接口
 
 interface 和 type关键字差不多，最大的差别是，interface可以继承，type不可以
+实现interface接口需要把interface定义的非选填的(`?:`)全部实现
 
 ```
   interface Person2 {
@@ -525,6 +526,110 @@ interface 和 type关键字差不多，最大的差别是，interface可以继�
   node interface.js
   // hi person
   // ....
+```
+
+### 20、接口的实现、继承
+
+#### 20.1、 implements： 实现
+
+```
+  interface PersonInterface {
+    name: string;
+    age: number;
+    sex?: string;  // ?: 为选填
+    readonly salary: number;  //readonly关键字描述的为只读属性
+    [propName: string]: any;  // 任意名字 任意类型的值
+    greet(): void; // 定义一个方法，莫得返回值，有返回值参照上面函数部分设置
+  }
+
+  class People implements PersonInterface{
+    name: string = 'catsaid';
+    age: number = 22;
+    salary: number = 8880;
+    greet(): void {
+      console.log(this.name);
+    }
+  }
+
+  let cat = new People();
+  cat.greet(); // catsaid
+
+```
+
+class 可以同时实现多个interface
+
+```
+  class People implements PersonInterface, secondInterface{
+    ....
+  }
+```
+
+#### 20.2、继承
+
+```
+  interface Employee extends PersonInterface{
+    ...
+    work: string = 'monkey'; // 除继承的之外自己有的属性
+  }
+```
+
+### 21、 泛型 Generic
+
+使用泛型来创建可重用的组件，一个组件可以支持多种类型的数据。 这样就可以以自己的数据类型来使用组件。
+
+#### 21.1、 泛型函数
+定义一个泛型的函数
+```
+  function identity<T>(arg: T): T {
+    return arg;
+  }
+```
+
+指定类型调用
+
+```
+  identity<string>("myString");
+```
+
+不指定类型调用，会根据传入的值自动进行判断是什么类型,但是使用泛型的时候，必须正确使用这个通用的类型， 换句话说，你必须把这些参数当做是任意或所有类型。
+
+```
+  identity("myString");
+```
+
+#### 21.2、泛型接口
+
+指定成员类型为泛型，或者指定接口类型为泛型
+
+```
+  interface genericIdentify {
+    <T>(arg: T): T;
+  }
+
+  function identify<T>(arg: T): T{
+    return arg;
+  }
+
+  let myIdentify: genericIdentify = identify;
+
+  let str = myIdentify<string>('hi');
+  console.log(str);  // hi
+
+  // -----------------------------------
+
+  interface genericIdentify<T> {
+    (arg: T): T;
+  }
+
+  function identify<T>(arg: T): T{
+    return arg;
+  }
+
+  let myIdentify: genericIdentify<string> = identify;
+
+  let str = myIdentify('hi');
+  console.log(str);  // hi
+
 ```
 
 
