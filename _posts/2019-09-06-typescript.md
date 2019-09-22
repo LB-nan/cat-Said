@@ -12,13 +12,21 @@ typescript学习笔记，跟着学习记录，不断完善。
 
 > 一个开源的语言。
 
-> typescript是JavaScript的超集。
+> typescript是基于ECMAScript进行拓展，JavaScript的超集。
 
-> typescript运行在浏览器的话需要一些插件转换，因为浏览器只认前端三剑客。
+> typescript可以编译成可读的，符合规范的JavaScript。
 
 > typescript是强类型语言。
 
 > 是属于微软的，所以推荐用VSCODE编辑器
+
+> 免费开源，使用apache授权协议
+
+>  添加了可选静态类型、类、模块。
+
+> 是一款跨平台的工具，支持所有的浏览器，主机和操作系统。
+
+> 编译时检查，不污染运行时。 
 
 安装：`npm install -g typescript`
 
