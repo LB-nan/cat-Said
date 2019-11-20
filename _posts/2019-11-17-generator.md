@@ -2,7 +2,7 @@
 layout: post
 title: generator生成器
 categories: javascript
-description: promise
+description: generator
 keywords: JavaScript, generator, async-await
 ---
 
