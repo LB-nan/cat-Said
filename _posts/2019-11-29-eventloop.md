@@ -40,5 +40,66 @@ node的宏任务：I/O 视图渲染。
 线程是计算机任务的最小单位。
 
 
+### 6、nextTick
+
+vue里的一个方法,做一个缓存机制。具体使用就默认会用了。
+
+原理就是微任务。
+
+判断当前环境是否支持promise并且是原生的方法，如果支持，就封装一层promise做微任务，然后把调用nextTick注册的方法存到一个数组里面去，当完成之后依次调用。
+
+PS：nextTick源码还判断了一些其他的方法，这里不详细展开了，有兴趣去看一哈。
+
+原理:
+
+```
+var nextTickArr = [];
+
+function nextTick(num){ // 注册事件
+  // some event
+  nextTickArr.push(()=>{
+    console.log(num)
+  });
+}
+
+nextTick(1)
+nextTick(2)
+nextTick(3)
+nextTick(4)
+
+
+console.log('前面执行一堆事件');
+ // 包装一层微任务，当之前的任务做完之后执行nextTick之前注册的事件
+new Promise((resolve, reject)=>{
+  resolve()
+}).then(data=>{
+  nextTickArr.forEach(fn=>fn());
+})
+
+console.log('还有一堆事件');
+
+/*
+  前面执行一堆事件
+  还有一堆事件
+  1
+  2
+  3
+  4
+*/
+```
+
+#### 6.1 判断一个方法是否为原生
+
+控制台输入`alert`
+
+```
+  alert
+  // ƒ alert() { [native code] }
+```
+
+判断原生方法就是判断`alert.toString`的值是否含有`native code`字符串。
+
+ps：可以自己写一个方法，重写他的`toString`，返回一个`[native code]`就可以欺骗别人自己为原生方法。
+
 
 
