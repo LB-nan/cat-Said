@@ -54,7 +54,7 @@ process.argv： 代表用户传递的参数，默认前两个参数为node使用
   });
 ```
 
-### 3、扩展
+#### 2.5 扩展
 commander： 命令行的管家 帮你提供--help ,必须先安装，这个配合`process.argv`使用。
 
 ```
@@ -75,5 +75,18 @@ program.on('--help',()=>{
     console.log(chalk.red('别help，去百度'));
 }).parse(process.argv);
 ```
+
+
+### util 工具类
+
+node的一个内置工具， 有两个主要方法`util.promisify(fn)`把函数转换成promise,`util.inherits`实现继承，不是用ES6写的，用的是类的继承实现的；它还有各种类型判断的方法。
+
+
+### events 事件模块
+
+node的事件绑定核心方法：`on`注册事件、 `emit`触发事件、 `once`只执行一次的事件、; `newListener`监听某个事件调用、`off`注销某个事件。
+
+
+
 
 
