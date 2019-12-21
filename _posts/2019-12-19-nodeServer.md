@@ -82,18 +82,4 @@ import program from 'commander';
 
 ### 4、创建服务器
 
-我们创建一个`src/server.js`，在`main.js`里面引用`import Server from './server'`;
-
-在`main.js`输入下面内容，把配置传进去。
-
-```
-let config = {
-      port: 8080
-}
-
-Object.assign(config, program);
-
-let server = new Server(config);
-server.listen(); // 启动服务
-```
-
+具体可见GitHub项目<https://github.com/oldpubcat/http-server>
