@@ -175,6 +175,19 @@ res.setHeader("Cache-Control", "no-store"); // 不进行缓存。
 
 这种情况可以使用`ETag`来做缓存处理。
 
+`Etag` 文件指纹必定用md5，所以使用`crypto`这个模块
+
+```js
+import crypto from 'crypto';
+let Etag = crypto.createHash('md5').update(fs.readFileSync(filePath)).digest('base64');
+res.setHeader("Etag", Etag);
+// 获取客户端请求携带的Etag指纹
+let ifNoneMatch = req.headers['if-none-match'];
+// 如果存在且相等，说明有缓存
+if(ifNoneMatch && ifNoneMatch === Etag){
+  return true;
+}
+```
 
 #### 6.3 两者异同
 
