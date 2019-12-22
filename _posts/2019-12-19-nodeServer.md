@@ -83,3 +83,26 @@ import program from 'commander';
 ### 4、创建服务器
 
 具体可见GitHub项目<https://github.com/oldpubcat/http-server>
+
+
+### 5、gzip压缩
+
+1. node内置了一个模块叫`zlib`，`zlib` 模块可以用来实现对 HTTP 中定义的 gzip 和 deflate 内容编码机制的支持。
+2. `gzip`压缩是提取相同的字符串进行替换，重复内容越多压缩率越高。
+3. 如下使用
+
+```js
+const zlib = require('zlib');
+const fs = require('fs');
+const gzip = zlib.createGzip();
+const deflate = zlib.createDeflate();
+const rs = fs.createReadStream('input.txt');
+const ws = fs.createWriteStream('input.txt.gz');
+rs.pipe(gzip).pipe(ws);
+```
+
+
+
+
+
+
