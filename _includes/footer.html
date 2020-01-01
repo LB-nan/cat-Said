@@ -99,6 +99,12 @@
     var thatTimeMiao = new Date().getTime();
     var chaTime = thatTimeMiao - timeMiao;
     var day = parseInt(chaTime / 86400000)
+    var yu = chaTime % 86400000
+    var hour = parseInt(yu / 3600000)
+    var yuH = yu % 3600000
+    var min = parseInt(yuH / 60000)
+    var yuM = yuH % 60000
+    var sec = parseInt(yuM / 1000)
     var yYear = 0
     var yDay = 0;
     for (let x = 0; x <= thatYear - year; x++) {
@@ -110,11 +116,13 @@
         yDay = day - fDay
       }
     }
-    return { yYear, yDay }
+    return { yYear: yYear, yDay: yDay, day: day, hour: hour, minute: min, second: sec }
   }
-  let dateObj = dayCha();
-  let str = `运行了${dateObj.yYear}年${dateObj.yDay}天`;
-  runDate.innerText = str;
+  setInterval(()=>{
+    let dateObj = dayCha();
+    let str = `${dateObj.yYear}年${dateObj.yDay}天${dateObj.hour}小时${dateObj.minute}分钟${dateObj.second}秒`;
+    runDate.innerText = str;
+  }, 1000)
 </script>
 </body>
 
