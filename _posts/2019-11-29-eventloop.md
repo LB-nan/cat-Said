@@ -52,7 +52,7 @@ PS：nextTick源码还判断了一些其他的方法，这里不详细展开了�
 
 原理:
 
-```
+```js
 var nextTickArr = [];
 
 function nextTick(num){ // 注册事件
@@ -92,7 +92,7 @@ console.log('还有一堆事件');
 
 控制台输入`alert`
 
-```
+```js
   alert
   // ƒ alert() { [native code] }
 ```
@@ -131,7 +131,7 @@ node有6个宏任务队列，2个微任务。其中宏任务队列有两个系�
 
 以后可能因为node版本升级导致会有略微差异,当前node版本`v10.16.3`
 
-```
+```js
   let fs = require('fs');
 
   fs.readFile('./name.txt', 'utf8',function(err) {
