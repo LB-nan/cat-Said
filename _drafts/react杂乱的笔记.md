@@ -193,3 +193,109 @@ People.defaultProps = {
 }
 ```
 
+
+
+#### 3.4 对传参进行类型检查
+
+检查组件参数的类型使用`prop-types`
+
+```js
+import PT from 'prop-types'
+function People(props){
+  return (
+  <div>
+    {props.name} age:{props.age}
+    {props.children}
+  </div>
+  )
+
+People.defaultProps = {
+  age: 20
+}
+People.propTypes = {
+  name: PT.string
+}
+ReactDOM.render(
+  <div>
+    你好，react
+    <People name={20} >
+      <div>我是children</div>
+    </People>
+    <Man name="said"/>
+  </div>,
+  document.getElementById('root')
+)
+```
+
+这样就成功的报警告了：Warning: Failed prop type: Invalid prop `name` of type `number` supplied to `People`, expected `string`in People`
+
+`prop-types`的值有下面几种
+
+1. PT.array
+2. bool
+3. number
+4. object
+5. string
+6. symbol
+7. node
+8. element
+
+如果需要设置必填，可以设置`isRequired`
+```js
+PT.string.isRequired
+```
+
+### 4、组件的内部状态 state
+
+只有类组件才有内部状态，其实这个和vue的`data`类似。vue是数据驱动，react更多的是状态驱动，每一次修改state对于react都是状态改变，然后去修改值，每次状态改变都会比较新旧的virtual DOM 的结果，对变化的部分进行更新。
+
+修改state的值， 这个和微信小程序的写法相似
+```js
+this.setState({
+  name: 'new name'
+})
+```
+
+之所以说state是内部状态是因为state完全受控于当前组件，其他组件的state修改也不会影响到当前组件的state。
+
+在一次事件执行期间的所有`setState`操作会合并成一次操作，然后更新`render`函数。所以在当前事件里获取到的state的值都是改变之前的值。
+
+```js
+// state =  {a : 1};
+
+onClock(()=>{
+  this.setSatet({
+    a: 2
+  })
+  console.log(this.state.a) // 1
+})
+
+```
+
+当你想要获取你当前修改的值，可以使用函数式写法，给`setState`传入一个函数，它接收两个参数，第一个是你传入的参数，第二个是props,需要有一个返回值，返回你要修改的对象。
+
+```js
+// 当前组件叫 Man
+<div onClick={()=>{
+  this.setState({
+    name: '猫'
+  }})
+
+  this.setState((prev, props)=>{
+    // 这里获取的是上面设置的值
+    console.log(prev, props)  // {name: "ccccat"}  {name: "said"}
+    return {
+      name: '又修改了一次'
+    }
+  })
+}}></div>
+
+
+// 使用的地方
+ <Man name="said"/>
+```
+
+
+
+
+
