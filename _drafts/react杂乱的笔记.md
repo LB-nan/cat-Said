@@ -296,6 +296,16 @@ onClock(()=>{
 ```
 
 
+### 5、事件
 
+关于事件的写法上面也已经有了，DOM原生事件会接收一个`event`参数，在react里面也有，只不过这个是一个合成对象，react对这个进行处理了。
 
+```js
+<div onClick={(event)=>{
+  console.log(event);
+}}>{name}</div>
+```
 
+可以使用event进行阻止冒泡`event.stopPropagation()`或者阻止默认行为`event.preventDefault()`。
+
+react支持的事件及事件对象更多看文档。
