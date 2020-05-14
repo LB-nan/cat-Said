@@ -309,3 +309,21 @@ onClock(()=>{
 可以使用event进行阻止冒泡`event.stopPropagation()`或者阻止默认行为`event.preventDefault()`。
 
 react支持的事件及事件对象更多看文档。
+
+
+react事件方面最大的问题可能就是this了，this其实是JavaScript老生常谈的话题了，在行内绑定事件的时候如果没有用箭头函数，会找不到this，需要使用`bind`绑定以下this到当前实例，最好用箭头函数就好了。
+
+在行内绑定this会有一个问题，就是由于组件每次会重新渲染，然后事件都会被重新注册，本来是没必要重新替换的，由于绑定了this，会重新返回一个事件，react会以为需要重新渲染，多多少少会有一些浪费性能，我们可以在`constructor`里面进行绑定
+
+```js
+this.handleEvent = this.handleEvent.bind(this);
+```
+
+最好的方案是使用箭头函数或者官网推荐的类属性语法。
+
+```js
+this.handleEvent = () => {
+  // sth
+}
+```
+
