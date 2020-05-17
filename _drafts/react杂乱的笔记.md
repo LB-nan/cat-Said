@@ -327,3 +327,32 @@ this.handleEvent = () => {
 }
 ```
 
+### 6、生命周期函数
+
+装载阶段：
+
+  1. `constructor()`：
+  2. `static getDerivedStateFromProps()`：在render之前可修改state的函数，不改变就返回null
+  3. `render()`：渲染虚拟DOM
+  4. `componentDidMount()`：DOM挂载完成
+
+更新阶段：
+
+  1. `static getDerivedStateFromProps()`：父组件更新，子组件可以使用这个进行监控更新
+  2. `shouldComponentUpdate(nextProp, nextState)`：用于性能优化，返回一个true组件正常更新，返回false，视图不会更新。
+  3. `render()`
+  4. `getSnapshptBeforeUpdate(prevProp, prveState)`：需要配合`componentDidUpdate`一起使用，获取一个更新之前的快照。它执行的时候已经计算好新的virtual DOM，但是浏览器还未更新DOM。
+  5. `componentDidUpdate(p, s, shot)`：更新已完成的回调，第三个参数是`getSnapshptBeforeUpdate`的返回值。
+
+卸载阶段：
+
+  1. `componentWillUnmount()`:
+
+
+
+
+
+
+
+
+
