@@ -349,7 +349,68 @@ this.handleEvent = () => {
   1. `componentWillUnmount()`:
 
 
+错误处理：
 
+  1. componentDidCatch(error, info): 捕获子组件的生命周期函数内抛出的错误。
+
+
+### 7、获取DOM
+
+想要获取真实DOM节点，需要在组件render之后，然后才可以在`componentDidMount`函数中拿到。
+
+方式一：`ref`
+
+```js
+<div ref= {(el) => {console.log(el)}}></div>
+```
+
+方式二：`createRef()`
+
+```js
+import React, {createRef} from 'react';
+constructor(props){
+  this.div1 = createRef();
+}
+render(){
+  return (
+    <div ref= {this.div1}></div>
+  )
+}
+```
+
+### 8、受控组件
+
+当插入一个表单组件，例如`input`，渲染完成后输入会正常输入，由于在react中，组件的变化由状态变化导致的，而现在状态没有变，这个input不受react控制，这种组件叫做非受控组件，也就是说它的状态变化不受react控制的，如果想控制它，就需要给`input`加一个`value`值，一旦加了`value`值，只要react不改变`value`，input永远不会改变。
+
+```js
+<input value=""></input>
+```
+
+监控了input之后的处理
+```js
+constructor(props){
+  super(props)
+  this.state =  {
+    name: 'ccccat',
+    val: ''
+  }
+}
+
+changeInput = (e) => {
+  let val = e.target.value;
+  console.log(val)
+  this.setState({
+    val: val
+  })
+}
+
+render() {
+  let {name, val} = this.state;
+  return (
+    <input value={val} onChange={this.changeInput}></input>
+  )
+}
+```
 
 
 
