@@ -414,7 +414,56 @@ render() {
 
 ### 9、路由
 
+使用路由需要安装`react-router-dom`
 
+入口文件的代码：
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { HashRouter as Router, Route } from 'react-router-dom'
+
+import Home from './components/Home'
+import User from './components/User'
+
+let root = document.getElementById('root');
+
+ReactDOM.render(
+  <Router>
+    <>
+      <Route path="/" component={Home}  />
+      <Route path="/User" component={User}  />
+    </>
+  </Router>,
+  root
+)
+```
+
+`User.tsx`  Home和User内部代码基本上一致：  
+```js
+import React from 'react';
+// RouteComponentProps 是定义好的类型，是props的值对应的类型
+import { RouteComponentProps } from 'react-router-dom';
+
+type Props = RouteComponentProps & {
+ // 这里可以写我们自定义的类型
+}
+
+// <Props>: 如果上面不引用RouteComponentProps然后也不定义这个的话，在里面是拿不到this.props.location的，只能拿到this.props，因为默认只有一个props，然后props有一个children，类型是一个reactElement，所以需要定义好，然后才可以使用
+
+// this.props返回了三个对象
+// 1. history: 历史对象，不是window.history，是内部的一个实现
+// 2. location：当前路径的一些信息，与history.location一致
+// 3. match：匹配对象
+export default class extends React.Component<Props> {
+  render() {
+    console.log(this.props.location)
+    return (
+      <div>User</div>
+    )
+  }
+}
+
+```
 
 
 

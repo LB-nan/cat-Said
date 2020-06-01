@@ -85,7 +85,7 @@ ReactDOM.render(
 )
 ```
 
-Home和User内部代码基本上一致：
+`User.tsx`  Home和User内部代码基本上一致：  
 ```js
 import React from 'react';
 // RouteComponentProps 是定义好的类型，是props的值对应的类型
