@@ -104,13 +104,15 @@ type Props = RouteComponentProps & {
 export default class extends React.Component<Props> {
   render() {
     console.log(this.props.location)
-    return (
+    return ( 
       <div>User</div>
     )
   }
 }
 
 ```
+
+### 3、实现一个router
 
 
 
