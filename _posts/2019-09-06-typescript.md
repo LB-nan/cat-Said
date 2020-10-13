@@ -35,12 +35,12 @@ typescript学习笔记，跟着学习记录，不断完善。
 > 转换单个文件: `tsc tsFileName.ts`  
 
 > 多个文件：`tsc --init`
-> 生成了一个`tscconfig.json`的文件
+> 生成了一个`tsconfig.json`的文件
 > 然后只需要输入`tsc`命令就好了
 > 使用tsc命令会在终端看到报错的changelog
 
 > 插件，vscode `TypeScript Auto Compiler`
-> `tscconfig.json`初始化一个config文件，然后修改ts文件的时候保存完自动转换为js文件了。
+> `tsconfig.json`初始化一个config文件，然后修改ts文件的时候保存完自动转换为js文件了。
 
 
 ### 2、语法规则
@@ -698,5 +698,30 @@ class 可以同时实现多个interface
   let countNum =new CountNum<number>(10, 20);
 ```
 
+### 22、tsconfig
 
+上面简单提了一嘴`tsconfig`文件配置，这里单独说一下。
+
+编译`ts`文件的时候，使用`tsc xxx.ts`的时候并未走配置文件，直接执行`tsc`会走。如果想走配置文件且单独编译某一个文件，需要在配置文件里配置。
+
+部分常用的配置
+```
+{
+  "inclued": ["xxx.ts", "xxx2.ts"],  /* 这里配置单独需要编译的文件名字 */
+  "exclued": ["xxx2.ts"],  /* 这里配置不编译的某个文件 */
+  "compilerOptions": { /* 具体的配置项 */
+    "sourceMap": true,                        /* 开启后编译的时候会编译出源码和编译后代码的对应关系文件，用于找错时候   Generates corresponding '.map' file. */
+    "outDir": "./build",                      /* 设置出口  Redirect output structure to the directory. */
+    "rootDir": "./src",                       /* 设置入口  Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    // "removeComments": true,                /* 设置为true去掉注释  Do not emit comments to output. */
+    "strict": true,                           /* 是否为严格执行，如果这个为true，则下面所有的配置项都默认为true           Enable all strict type-checking options.  */
+    // "noImplicitAny": true,                 /* 设为false后，允许你的注解类型是any的话不用特意标明不会报错         Raise error on expressions and declarations with an implied 'any' type. */
+    // "strictNullChecks": true,              /* 设为false后，允许null值为true，意思为允许有变量的默认值为null     Enable strict null checks. */
+    "noUnusedLocals": true,                   /* 开启后检测定义未使用的变量，如果会报错提示    Report errors on unused locals. */
+    "noUnusedParameters": true,               /* 开启后检测定义未使用的方法，如果会报错提示  Report errors on unused parameters. */
+    ...
+  }
+}
+```
+查看全部的配置地址：https://www.tslang.cn/docs/handbook/compiler-options.html
 
