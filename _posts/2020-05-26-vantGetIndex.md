@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Vant, Vue
+title: vant的rules匹配规则没有index索引
 categories: javascript
 description: vant的自定义rules获取index
 keywords: vant, index, rules
 ---
 
-vant的自定义匹配规则并未返回`index`，如果是数组需要判断某一项的值就会出问题，因为找不到单独的那一项，一个不匹配会全部报错。官方文档上没有。
+vant的自定义匹配规则并未返回`index`，如果是数组需要判断某一项的值就会出问题，因为找不到单独的那一项，一个不匹配会全部报错。官方文档上没有,这是解决方案，记录一下笔记。
 
 ### 1、问题复现
 一个`van-field`正常写`rules`的自定义
