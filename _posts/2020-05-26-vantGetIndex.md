@@ -71,5 +71,5 @@ methods: {
 }
 ```
 
-具体的项目示例我放到了github：[https://github.com/oldpubcat/vantRules/tree/master/vantrules](https://github.com/oldpubcat/vantRules/tree/master/vantrules)
+具体的项目示例我放到了github：[https://github.com/LB-nan/vantRules/tree/master/vantrules](https://github.com/LB-nan/vantRules/tree/master/vantrules)
 

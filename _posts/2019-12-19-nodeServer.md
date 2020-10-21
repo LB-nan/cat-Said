@@ -82,7 +82,7 @@ import program from 'commander';
 
 ### 4、创建服务器
 
-具体可见GitHub项目<https://github.com/oldpubcat/http-server>
+具体可见GitHub项目<https://github.com/LB-nan/http-server>
 
 
 ### 5、gzip压缩

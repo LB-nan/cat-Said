@@ -19,7 +19,7 @@ side_bar_repo_limit: 5
 author: Lbn
 organization: 
 organization_url: 
-github_username: oldpubcat
+github_username: LB-nan
 location: BeiJing, China
 email: oldpubcat@vip.qq.com
 
@@ -82,7 +82,7 @@ collections:
         output: true
         permalink: /wiki/:path/
 
-repository: oldpubcat.github.io
+repository: LB-nan.github.io
 
 # ---------------- #
 #      Comments    #
