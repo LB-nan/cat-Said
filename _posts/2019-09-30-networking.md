@@ -196,7 +196,7 @@ ARP协议：ARP协议寻找MAC地址就是靠广播，发一个广播包，查�
 
 
 网络层主要的是IP头信息，头信息具体如图所示：
-![](/images/blog/webpack/t.jpg)
+![](/images/blog/img/t.jpg)
 
 ### 5、ping
 
