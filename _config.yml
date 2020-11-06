@@ -95,9 +95,9 @@ comments_provider: gitalk
 gitalk:
     owner: LB-nan
     repo: 'cat-Said'
-    clientID: f7c70d3addf0d2a469dc
+    clientID: 378645856f6c0a598997
     admin: ['LB-nan']
-    clientSecret: 57ecd76ff498b7d93970540e59055bc570cb044a
+    clientSecret: b4e17a59e9e72ec5ff7add36052eb9f133fc9cd7
     id: location.pathname
 # 在使用其它评论组件时可点击显示 Disqus
 lazy_load_disqus : false
