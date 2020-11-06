@@ -16,10 +16,10 @@ permalink: /links/
   {% endif %}
 {% endfor %}
 
-> 友情链接
+<!-- > 友情链接
 
 {% for link in site.data.links %}
   {% if link.src == 'www' %}
 * [{{ link.name }}]({{ link.url }})
   {% endif %}
-{% endfor %}
+{% endfor %} -->
