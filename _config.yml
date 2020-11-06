@@ -93,8 +93,8 @@ comments_provider: gitalk
 # !!!Important!!! Please modify infos below to yours
 # https://github.com/gitalk/gitalk#install
 gitalk:
-    owner: oldpubcat
-    repo: 'catsaid.cn'
+    owner: LB-nan
+    repo: 'cat-Said'
     clientID: f7c70d3addf0d2a469dc
     admin: ['LB-nan']
     clientSecret: 57ecd76ff498b7d93970540e59055bc570cb044a
