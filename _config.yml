@@ -94,11 +94,11 @@ comments_provider: gitalk
 # https://github.com/gitalk/gitalk#install
 gitalk:
     owner: oldpubcat
-    repo: 'LB-nan.github.io'
+    repo: 'catsaid.cn'
     clientID: f7c70d3addf0d2a469dc
     admin: ['LB-nan']
     clientSecret: 57ecd76ff498b7d93970540e59055bc570cb044a
-    id: decodeURI(window.location.pathname)
+    id: location.pathname
 # 在使用其它评论组件时可点击显示 Disqus
 lazy_load_disqus : false
 
