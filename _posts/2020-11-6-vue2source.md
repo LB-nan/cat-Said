@@ -276,4 +276,165 @@ function defineReactive(data, key, value) {
 
 vue2对数组的劫持是重写数组的方法，然后触发劫持，vue3使用proxy就不需要，直接代理。
 
+把数组和对象劫持分开做判断，数组里的每一项还可能是对象，所以需要遍历数组的每一项，然后去劫持
+```js
+class Observer {
+  constructor(value) {
+    // ...其他
+
+    if (Array.isArray(value)) {
+      this.observerArray(value); // 数组监听  不会对索引进行监听，会有性能问题，数组里是对象的话才监听
+    } else {
+      this.walk(value);
+    }
+  }
+
+  observerArray(value) {
+    // 把用户传入的数组里的每一项进行劫持
+    for (var i = 0; i < value.length; i++) {
+      observe(value[i]);
+    }
+  }
+  // ...其他
+}
+```
+
+上面就可以简单监听到数据的值了，但是数组的改变时候调用方法还未监听，vue是重写的原方法
+
+数组的方法逻辑比较多，抽离到单独的文件里面`array.js`，然后创建一个新对象`arrayMethods`，原型指向数组原生的方法，然后导出
+我们将在创建的新对象上重写数组的方法
+
+```js
+// array.js
+// 只劫持会修改原数组的方法： push  shift unshift  pop reverse sort splice
+
+let oldArrayMethods = Array.prototype;
+
+export const arrayMethods = Object.create(oldArrayMethods);
+```
+
+把导出的方法放到数据的原型上
+```js
+// observer/index.js
+
+if (Array.isArray(value)) {
+  value.__proto__ = arrayMethods; // 数组操作被监听是因为它的方法是被重写的
+
+  this.observerArray(value); // 数组监听  不会对索引进行监听，会有性能问题，数组里是对象的话才监听
+} else {
+  this.walk(value);
+}
+
+```
+
+然后我们来重写数组的方法
+```js
+// array.js
+
+const methods = ['push', 'pop', 'shift', 'unshift', 'reverse', 'sort', 'splice'];
+
+methods.forEach(method => {
+  arrayMethods[method] = function(...args) {
+    let result = oldArrayMethods[method].apply(this, args);
+    return result;
+  }
+})
+```
+
+这样就重写好了，但是还有问题，如果数组的操作是新增的话，新增的数据是没有被劫持的，所以我们需要修改一下，根据新增的那几个方法来判断劫持
+
+```js
+methods.forEach(method => {
+  arrayMethods[method] = function(...args) {
+    let result = oldArrayMethods[method].apply(this, args);
+    let inserted;  // 新增的值
+    // 当原数组有新增的时候,需要重新判断监听新增的值，进行劫持
+    switch (method) {
+      case 'push':
+      case 'unshift':
+        inserted = args;
+        break;
+      case 'splice':
+        inserted = args.slice(2);
+        break;
+      default:
+        break;
+    }
+
+    return result;
+  }
+})
+```
+
+数组新增的值需要重新遍历进行劫持，但是劫持的方法在`observer/index.js`里面，我们需要在这里访问到，所以挂载到原型上。
+
+```js
+// observer/index.js
+// 这里需要设置一下不可枚举，不然value挂载的this示例在后面的遍历中会被接着遍历，导致爆栈
+
+Object.defineProperty(value, '__ob__', {
+  enumerable: false, //不可枚举
+  configurable: false, // 不可配置
+  value: this
+})
+
+if (Array.isArray(value)) {
+  // ...
+}
+
+```
+
+这样就可以在`array.js`里面访问到了,就可以进行劫持。
+
+
+```js
+methods.forEach(method => {
+  arrayMethods[method] = function(...args) {
+    let result = oldArrayMethods[method].apply(this, args);
+    let inserted;
+    let ob = this.__ob__;
+    // 当原数组有新增的时候,需要重新判断监听新增的值是否需要劫持
+    switch (method) {
+      case 'push':
+      case 'unshift':
+        inserted = args;
+        break;
+      case 'splice':
+        inserted = args.slice(2);
+        break;
+      default:
+        break;
+    }
+
+    // 如果数组有新增，则对新增的值进行劫持
+    if (inserted) ob.observerArray(inserted);
+    return result;
+  }
+})
+```
+
+截止，数组的劫持就好了，我们可以把挂载`__ob__`设置不可枚举的方法抽离到`unit/index.js`里面
+```js
+export function def(data, key, value) {
+  Object.defineProperty(data, key, {
+    enumerable: false, //不可枚举
+    configurable: false, // 不可配置
+    value: value
+  })
+}
+```
+
+然后使用的地方引用一下，使用一下
+```js
+import { isObject, def } from '../unit/index';
+
+class Observer {
+  constructor(value) {
+    def(value, '__ob__', this);
+    // ...
+  }
+}
+```
+
+
 
