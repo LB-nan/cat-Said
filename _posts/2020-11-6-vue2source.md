@@ -489,16 +489,16 @@ const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s
 const startTagClose = /^\s*(\/?)>/; // 匹配标签结束的 >  <div>
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g
 
-function start(tag, attrs) {
-  console.log(tag, attrs);
+function start(tagName, attrs) {
+  console.log(tagName, attrs);
 }
 
 function chars(text) {
   console.log('文字', text)
 }
 
-function end(tag) {
-  console.log('结束：', tag)
+function end(tagName) {
+  console.log('结束：', tagName)
 }
 
 function parseHTML(html) {
@@ -562,6 +562,7 @@ function parseHTML(html) {
       }
     }
   }
+  return root;
 }
 
 
@@ -573,4 +574,69 @@ export function compileToFunction(template) {
 }
 ```
 
-通过上面可以匹配出所需的各个节点，我们就可以组装出一颗ast语法树了
+通过上面可以匹配出所需的各个节点，我们就可以组装出一颗ast语法树了。
+
+```js
+
+let root = null; // 根节点
+let currentParent = null;
+// 栈，存储标签名称，做对比，标签是否合法，从头push，遇到一个push一个
+// 当遇到挨着的重复的就出栈一个作为一个正常闭合的标签。当栈空就说明数据合法，完成还有剩余说明有标签不合法，未闭合或输错其他
+let stack = [];
+const ELEMENT_TYPE = 1;
+const TEXT_TYPE = 3;
+
+function createASTElement(tagName, attrs) {
+  return {
+    tag: tagName,
+    type: ELEMENT_TYPE,
+    children: [],
+    attrs: attrs,
+    parent: null
+  }
+}
+
+function start(tagName, attrs) {
+  // 遇到开始标签开始创建ast树
+  let element = createASTElement(tagName, attrs);
+  if (!root) {
+    root = element;
+  }
+  currentParent = element;
+  stack.push(element);
+}
+
+function chars(text) {
+  text = text.replace(/\s/g, '');
+  if (text) {
+    currentParent.children.push({
+      text,
+      type: TEXT_TYPE
+    })
+  }
+}
+
+function end(tagName) {
+  // 把当前的最后一个出栈，如果传入的tag和element相同，则合法，是一个闭合的标签
+  let element = stack.pop();
+  if (tagName == element.tag) {
+    // 当前元素的父级肯定是他前面的那个元素
+    currentParent = stack[stack.length - 1];
+    // 如果有父级
+    if (currentParent) {
+      element.parent = currentParent;
+      currentParent.children.push(element);
+    }
+  }
+}
+```
+
+简单描述一下上面代码逻辑
+1. 创建一个根节点作为ast的根，然后创建一个当前元素的parent，创建一个栈，还有节点类型
+2. 当代码解析到开始标签的时候也就是`start()`，我们创建一个对象，判断有没有根，没有的话当前对象就是根，就是父节点，然后赋值当前的父节点为当前的节点，然后把元素放到栈里面
+3. 如果遇到文字节点则创建文字节点，当前文字节点的父级就是全局的`currentParent`，直接push到父节点里面就好
+4. 如果匹配到结束标签，则把最后一个元素拿出来对比，如果和传入的元素名字一致，则两个是同一个元素，可以正常闭合，出栈，然后当前栈里的最后一个元素就是当前元素的父节点，修改父子的对应关系后，继续匹配。
+5. 当传入的html字符串也就是模板全部匹配完成之后，代码结束，返回`root`。
+
+这个时候一个描述dom对象的ast语法树的对象就拿到了，然后就要进行`render()`了。
+
