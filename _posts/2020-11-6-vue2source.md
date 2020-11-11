@@ -201,7 +201,7 @@ function initComputed(vm) {};
 function initWatch(vm) {};
 ```
 
-#### 2.2 对象数据劫持
+### 3、 对象数据劫持
 
 也就是响应式原理，抽离到`observer/index.js`，vue2的响应式原理使用的是`object.defineProperty()`方法，该方法有兼容问题，所以IE8及以下vue2不支持。
 
@@ -272,7 +272,7 @@ function defineReactive(data, key, value) {
 4. 当用户修改一个值的时候可能会这样修改`vm._data.a = {a:2}`，这个时候用户传入的值是对象，需要对用户传入的值再进行一次劫持。
 
 
-#### 2.3 数组的劫持
+### 4、数组的劫持
 
 vue2对数组的劫持是重写数组的方法，然后触发劫持，vue3使用proxy就不需要，直接代理。
 
@@ -436,5 +436,141 @@ class Observer {
 }
 ```
 
+### 5、模板解析
+
+数据都劫持完开始处理页面，当用户传入了`el`属性的时候，就要渲染挂载元素，渲染模板。这个地方需要考虑vue编译的优先级`ender() => template() => el属性`,在`init.js`里面,这里先弄模板编译
+
+```js
+// init.js
+
+import { compileToFunction } from './compiler/index.js';
+
+export function initMixin(Vue) {
+  // ...
+
+  Vue.prototype.$mount = function(el) {
+    const vm = this;
+    const options = vm.$options;
+    // 拿到传进来的元素节点
+    el = document.querySelector(el);
+
+    // 如果有render方法就走render方法
+    if (!options.render) {
+      // 如果不存在render方法就走模板编译
+      let template = options.template; // 获取模板
+      // 如果不存在template就把el的节点设为template
+      if (!template && el) {
+        template = el.outerHTML; // 获取到节点及节点的所有子节点
+      }
+      // 取到模板然后进行编译,编译完成然后渲染   compileToFunction()抽离到另外文件
+      const render = compileToFunction(template);
+      options.render = render;
+    } else {
+      // render ...
+    }
+  }
+}
+
+```
 
 
+把模板传递过去，我们需要把他转化成一个render方法，模板需要先解析成一个树，描述节点关系
+假设一段HTML代码`<div id="app"><p>aaa</p></div>`是传入的模板，我们需要先匹配到开始标签`<`然后匹配出标签的名字`div`,这个时候就获取到当前的标签是什么标签了，然后再匹配属性`id="app"`，当然也可能没属性，然后接下来匹配结束标签`>`，然后匹配文字，然后又是开始标签循环，每一次匹配都把匹配到的截取，这样慢慢就匹配完一整个字符串语句，
+
+这里没有考虑一些很特殊的情况，比如不闭合标签之类的。
+
+```js
+// compiler/index.js
+const ncname = `[a-zA-Z_][\\-\\.0-9_a-zA-Z]*`; // 匹配字符串类型：abc-aaa
+const qnameCapture = `((?:${ncname}\\:)?${ncname})`; // 匹配字符串类型：<aaa:asdads>
+const startTagOpen = new RegExp(`^<${qnameCapture}`); // 标签开头的正则 捕获的内容是标签名
+const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`); // 匹配标签结尾的 </div>
+const attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/; // 匹配属性的
+const startTagClose = /^\s*(\/?)>/; // 匹配标签结束的 >  <div>
+const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g
+
+function start(tag, attrs) {
+  console.log(tag, attrs);
+}
+
+function chars(text) {
+  console.log('文字', text)
+}
+
+function end(tag) {
+  console.log('结束：', tag)
+}
+
+function parseHTML(html) {
+  // 不停的去解析html字符串
+  while (html) {
+    let textEnd = html.indexOf('<');
+    if (textEnd === 0) {
+      // 如果当前索引为0，肯定是一个标签  解析标签
+      let startTagMatch = parseStartTag();
+      if (startTagMatch) { // 如果开始标签匹配完毕，然后还需要匹配结束标签
+        start(startTagMatch.tagName, startTagMatch.attrs);
+        continue;
+      }
+
+      let endTagMatch = html.match(endTag);
+      if (endTagMatch) { // 如果匹配到结束标签，则继续截取
+        advance(endTagMatch[0].length);
+        end(endTagMatch[1]);
+        continue;
+      }
+    }
+    let text;
+    if (textEnd >= 0) {
+      text = html.substring(0, textEnd);
+      console.log(text);
+    }
+    if (text) {
+      advance(text.length);
+      chars(text);
+    }
+  }
+
+  // 用作截取字符串 
+  function advance(n) {
+    html = html.substring(n);
+  }
+
+  function parseStartTag() {
+    // 匹配当前标签，匹配到之后把原数据`html`截取，保留后面的  例如： <div id="app"><p>aaa</p></div>
+    let start = html.match(startTagOpen)
+    if (start) {
+      const match = {
+          tagName: start[1],
+          attrs: []
+        }
+        // 用匹配到的标签的长度去截取  | 变成 id="app"><p>aaa</p></div>
+      advance(start[0].length);
+
+      // 匹配属性，当有属性的时候就进行截取，直到没有 | 变成 ><p>aaa</p></div>
+      let end, attr;
+      while (!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
+        advance(attr[0].length);
+        // 把取到的属性存到match里面
+        match.attrs.push({ name: attr[1], value: attr[3] || attr[4] || attr[5] });
+      }
+
+      // 去掉 >   还是使用截取
+      if (end) {
+        advance(end[0].length);
+        return match;
+      }
+    }
+  }
+}
+
+
+export function compileToFunction(template) {
+  let root = parseHTML(template);
+  return function render() {
+
+  }
+}
+```
+
+通过上面可以匹配出所需的各个节点，我们就可以组装出一颗ast语法树了
