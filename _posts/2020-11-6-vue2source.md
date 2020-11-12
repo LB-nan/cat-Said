@@ -1,12 +1,12 @@
 ---
 layout: post
-title: vue2源码仿写
+title: vue2源码解析
 categories: vue
 description: vue2.x源码
 keywords: vue, javascript
 ---
 
-仿写一个vue2.x的源码，Object.defineProperty()
+仿写一个简易版vue2.x的源码核心部分，加深对vue的理解，不过多考虑各种边界与问题。
 
 ### 1、环境搭建
 
@@ -718,4 +718,54 @@ function gen(node) {
 
 需要判断传入的元素的子元素是否存在，`children`是一个数组，所以需要遍历，每一项需要判断是元素还是文本节点，元素节点的话回调处理元素节点，继续之前的拼接，文字节点的话存起来，这里还有特殊情况未处理，如：`{{name}}`
 
+那来处理`{{name}}`这种的代码
+```js
 
+function gen(node) {
+  if (node.type == 1) {
+    // 元素标签
+    return generate(node);
+  } else {
+    // 文本
+    let text = node.text; // xxx {{name}} xxx {{age}} => 'xxx' + _s(name) + 'xxx' + _s(age); 
+    // 存放匹配的结果
+    let tokens = [];
+    // 匹配到的值，索引
+    let match, index;
+    // 索引
+    let lastIndex = defaultTagRE.lastIndex = 0;
+    while (match = defaultTagRE.exec(text)) {
+      // 当前匹配到的位置
+      index = match.index;
+      // 如果当前截取到的位置大于正则索引位置则把匹配到的那一段数据放到tokens里面
+      if (index > lastIndex) {
+        tokens.push(JSON.stringify(text.slice(lastIndex, index)));
+      }
+      // 匹配到{{age}}的时候把ags放到`_s()`的方法里面
+      tokens.push(`_s(${match[1].trim()})`);
+      // 然后把当前的正则匹配索引置 为  当前匹配的位置+截取的数据的长度，也就是下一次开始的位置
+      lastIndex = index + match[0].length;
+    }
+    // 如果最后还有剩余，则push到最后面。
+    if (lastIndex < text.length) {
+      tokens.push(JSON.stringify(text.slice(lastIndex)));
+    }
+    // 用`+`号连接
+    return `_v(${tokens.join('+')})`;
+
+    // 到此为止，拼接完毕
+
+    /*
+    HTML模板： 
+      <div id="app">
+        <p>vvv{{name}}</p>
+      </div>
+
+    转化后的字符串： _c("div",{id:"app},_c("p",undefined,_v("vvv"+_s(name))))
+    */
+  }
+}
+```
+
+就把一个模板解析成一串字符串了，可以用于模板引擎了。
+ 
