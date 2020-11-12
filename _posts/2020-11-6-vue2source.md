@@ -640,3 +640,82 @@ function end(tagName) {
 
 这个时候一个描述dom对象的ast语法树的对象就拿到了，然后就要进行`render()`了。
 
+
+### 6、模板引擎
+
+在拿到`root`的地方，处理ast语法树，创建一个函数来处理,需要处理成一个字符串`_c(tagName,{attr:value,...},children,children...)`这种格式
+
+```js
+// compiler/index.js
+export function compileToFunction(template) {
+  let root = parseHTML(template);
+  console.log(root);
+
+  // ast语法树转成js
+  let code = generate(root);
+
+  return function render() {
+
+  }
+}
+```
+
+`generate()`方法接受一个参数，就是`root`，根据前面的格式处理字符串，属性和子元素的单独抽离方法进行处理。
+```js
+function generate(el) {
+  let code = `_c ("${el.tag}",${el.attrs.length ? genProps(el.attrs): 'undefined'}${el.children ? `,${genChildren(el)}` : ''})`;
+  return code;
+}
+```
+
+
+处理属性的方法，没有考虑复杂的属性的情况, 属性是个数组，传递过来的值格式是`[{name: 'id', value:: 'app'}]`
+```js
+// 处理属性
+function genProps(attrs) {
+  let str = '';
+  for (let i = 0; i < attrs.length; i++) {
+    let attr = attrs[i];
+    if (attr.name === 'style') { // 如果当前属性是css
+      let obj = {};
+      attr.value.split(';').forEach(item => {
+        let [key, value] = item.split(':');
+        obj[key] = value;
+      })
+      attr.value = obj;
+    }
+    // attr.value有可能是对象，所以JSON.stringify();
+    str += `${attr.name}:${JSON.stringify(attr.value)}`;
+  }
+  return `{${str.slice(0,-1)}}`;
+}
+```
+
+处理子元素的方法，子元素里面还可能是节点，所以需要递归处理
+```js
+// 处理子节点
+function genChildren(el) {
+  let children = el.children;
+  if (children && children.length > 0) {
+    return `${children.map(child => gen(child)).join(',')}`
+  } else {
+    return false;
+  }
+}
+
+function gen(node) {
+  if (node.type == 1) {
+    // 元素标签
+    return generate(node);
+  } else {
+    // 文本
+    let text = node.text;
+    return `_v(${text})`;
+  }
+}
+
+```
+
+需要判断传入的元素的子元素是否存在，`children`是一个数组，所以需要遍历，每一项需要判断是元素还是文本节点，元素节点的话回调处理元素节点，继续之前的拼接，文字节点的话存起来，这里还有特殊情况未处理，如：`{{name}}`
+
+
