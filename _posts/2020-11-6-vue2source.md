@@ -158,6 +158,7 @@ export function initMixin(Vue) {
 
 ```js
 import { observe } from './observer/index.js';
+import { proxy } from './unit/index';
 
 export function initState(vm) {
   const opts = vm.$options;
@@ -190,6 +191,12 @@ function initData(vm) {
   // vm._data: 暴露出去给用户使用
   data = vm._data = typeof data === 'function' ? data.call(vm) : data;
 
+
+  // 取值时代理，可以vm.name这样直接拿到vm._data.name
+  for (let key in data) {
+    proxy(vm, '_data', key);
+  }
+
   // 对象劫持  用户修改了数据可以得到通知，进行一系列操作，如更新视图
   // MVVM模式  数据变化可以驱动视图变化
   // 响应式
@@ -199,6 +206,21 @@ function initData(vm) {
 function initComputed(vm) {};
 
 function initWatch(vm) {};
+```
+
+```js
+// unit/index.js
+export function proxy(vm, source, key) {
+  Object.defineProperty(vm, key, {
+    get() {
+      return vm[source][key];
+    },
+    set(newVal) {
+      vm[source][key] = newVal;
+    }
+  })
+}
+
 ```
 
 ### 3、 对象数据劫持
@@ -685,7 +707,7 @@ function genProps(attrs) {
       attr.value = obj;
     }
     // attr.value有可能是对象，所以JSON.stringify();
-    str += `${attr.name}:${JSON.stringify(attr.value)}`;
+    str += `${attr.name}:${JSON.stringify(attr.value)},`;
   }
   return `{${str.slice(0,-1)}}`;
 }
@@ -767,5 +789,35 @@ function gen(node) {
 }
 ```
 
-就把一个模板解析成一串字符串了，可以用于模板引擎了。
+就把一个模板解析成一串字符串了，可以用于render函数使用了，render函数返回的是一个虚拟DOM(VDOM)，而且还需要绑定一下`this`到实例上，比如数据`_c("div",{id:"app},_c("p",undefined,_v("vvv"+_s(name))))`这里的`name`是需要去`vm`也就是实例上获取的。这个时候就需要`with`了。
+
+```js
+export function compileToFunction(template) {
+  let root = parseHTML(template);
+
+  // ast语法树转成js
+  let code = generate(root);
+  // 使用with包装起来
+  let renderFn = new Function(`with(this){ return ${code}}`);
+
+  return renderFn;
+}
+```
+
+这样就封装好了，我们在`init.js`里面打印一下，可以拿到如下结果
+```js
+ƒ anonymous() {
+  with(this){ return _c("div",{id:"app"},_c("p",undefined,_v("vvv"+_s(name))))}
+}
+```
+
+现在开始调用render()进行初始化渲染流程，准备生成虚拟DOM了。
+
+> with: JavaScript查找某个未使用命名空间的变量时，会通过作用域链来查找，作用域链是跟执行代码的context或者包含这个变量的函数有关。'with'语句将某个对象添加到作用域链的顶部，如果在statement中有某个未使用命名空间的变量，跟作用域链中的某个属性同名，则这个变量将指向这个属性值。如果沒有同名的属性，则将拋出ReferenceError异常。——MDN
  
+
+ ### 7、初始化渲染
+
+
+
+
