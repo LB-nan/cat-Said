@@ -818,6 +818,193 @@ export function compileToFunction(template) {
 
  ### 7、初始化渲染
 
+渲染就需要挂载组件，创建一个方法，挂载组件，
+
+```js
+import { mountComponent } from './lifecycle.js'
+
+Vue.prototype.$mount = function(el) {
+  const vm = this;
+  const options = vm.$options;
+  el = document.querySelector(el);
+
+  // ...
+
+  // 渲染当前组件，挂载组件
+  mountComponent(vm, el);
+}
+```
+
+挂载方法里面需要通过render创建虚拟dom，然后通过update创建真实dom
+
+```js
+// lifecycle.js
+
+export function mountComponent(vm, el) {
+  const options = vm.$options;
+  vm.$el = el;
+
+  // watcher 用来渲染
+  // vm._render 通过解析的render方法，渲染出虚拟dom
+  // vm._update 通过虚拟dom，创建真实dom
+
+  // 渲染页面
+  let updateComponent = () => {
+    vm._update(vm._render());
+  }
+
+  // 渲染watcher，每个组件都有一个watcher，   true表示是一个渲染watcher
+  new Watcher(vm, updateComponent, () => {}, true);
+}
+```
+
+创建`_render()`和`_update`方法，把他们加到原型上面。
+
+```js
+// index.js
+import { initMixin } from './init.js';
+import { renderMixin } from './render.js';
+import { lifecycleMixin } from './lifecycle.js';
+
+function Vue(options) {
+  this._init(options);
+}
+
+initMixin(Vue);
+renderMixin(Vue);
+lifecycleMixin(Vue);
+
+export default Vue;
+
+
+
+// render.js
+export function renderMixin(Vue) {
+  Vue.prototype._render = function (){
+    
+  }
+}
+
+
+// lifecycle.js
+export function lifecycleMixin(Vue){
+  Vue.prototype._update = function(){
+    
+  }
+}
+
+```
+
+都创建完成之后我们来写watcher
+
+```js
+class Watcher {
+  constructor(vm, exprOrFn, callback, options) {
+    this.vm = vm;
+    this.callback = callback;
+    this.options = options;
+
+    this.getter = exprOrFn; // 将内部传过来的回调函数 放到getter属性上
+    this.get();
+  }
+  get() {
+    this.getter();
+  }
+}
+
+export default Watcher
+```
+
+在watcher里面调用了`_render()`，来完善`_render()`;
+```js
+export function renderMixin(Vue) {
+
+  Vue.prototype._render = function() {
+    const vm = this;
+    const { render } = vm.$options;
+    console.log(render);
+  }
+}
+```
+打印结果
+```js
+ƒ anonymous(
+) {
+with(this){ return _c("div",{id:"app"},_c("p",undefined,_v("vvv"+_s(name))))}
+}
+```
+
+我们执行`render`，来生成vdom。
+
+```js
+render.call(vm);
+```
+报错` _c is not defined`，`_c()`创建节点,`_v()创建文字节点`,`_s()对对象进行一次JSON.stringify()`，来完善这些方法。
+
+```js
+import { createElement, createTextNode } from './vdom/create-element.js';
+export function renderMixin(Vue) {
+
+  // 创建节点
+  Vue.prototype._c = function() {
+      return createElement(...arguments);
+    }
+    // 创建文字节点
+  Vue.prototype._v = function(text) {
+      return createTextNode(text);
+    }
+    // json.stringify()
+  Vue.prototype._s = function(val) {
+    return val == null ? '' : (typeof val === 'object' ? JSON.stringify(val) : val);
+  }
+
+  Vue.prototype._render = function() {
+    const vm = this;
+    const { render } = vm.$options;
+    let vnode = render.call(vm);
+    return vnode;
+  }
+}
+```
+
+把创建节点和文本节点的方法抽离出去了，下面是代码
+```js
+//  ./vdom/create-element.js
+export function createElement(tag, data = {}, ...children) {
+  let key = data.key;
+  if (key) {
+    delete data.key;
+  }
+  return vnode(tag, data, key, children, undefined);
+}
+export function createTextNode(text) {
+  return vnode(undefined, undefined, undefined, undefined, text);
+}
+
+function vnode(tag, data, key, children, text) {
+  return {
+    tag,
+    data,
+    key,
+    children,
+    text
+  }
+}
+```
+
+`render`返回了一个虚拟dom，就可以在`lifecycle`里面的`_update()`里拿到了，
+
+```js
+// lifecycle.js
+export function lifecycleMixin(Vue) {
+  Vue.prototype._update = function(vnode) {
+    // 通过虚拟节点渲染出真实dom
+    console.log(vnode);
+  }
+}
+
+```
+
 
 
 
