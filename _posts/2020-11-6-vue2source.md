@@ -915,6 +915,8 @@ class Watcher {
 export default Watcher
 ```
 
+#### 7.1 生成虚拟dom
+
 在watcher里面调用了`_render()`，来完善`_render()`;
 ```js
 export function renderMixin(Vue) {
