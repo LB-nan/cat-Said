@@ -816,7 +816,7 @@ export function compileToFunction(template) {
 > with: JavaScript查找某个未使用命名空间的变量时，会通过作用域链来查找，作用域链是跟执行代码的context或者包含这个变量的函数有关。'with'语句将某个对象添加到作用域链的顶部，如果在statement中有某个未使用命名空间的变量，跟作用域链中的某个属性同名，则这个变量将指向这个属性值。如果沒有同名的属性，则将拋出ReferenceError异常。——MDN
  
 
- ### 7、初始化渲染
+### 7、初始化渲染
 
 渲染就需要挂载组件，创建一个方法，挂载组件，
 
