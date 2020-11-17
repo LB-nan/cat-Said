@@ -1,12 +1,12 @@
 ---
 layout: post
-title: vue2源码解析
+title: vue核心——数据劫持 & vdom
 categories: vue
 description: vue2.x源码
 keywords: vue, javascript
 ---
 
-仿写一个简易版vue2.x的源码核心部分，加深对vue的理解，不过多考虑各种边界与问题。
+仿写一个简易版vue2.x的源码核心部分——数据劫持和模板编译(render函数、vdom)，加深对vue的理解。
 
 ### 1、环境搭建
 
