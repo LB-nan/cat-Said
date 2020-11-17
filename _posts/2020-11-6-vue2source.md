@@ -1008,5 +1008,76 @@ export function lifecycleMixin(Vue) {
 ```
 
 
+#### 7.2 渲染真实dom
+
+上面拿到虚拟dom，就可以用来渲染真实dom了。渲染以及替换抽离到`patch`方法里面
+
+```js
+import { patch } from './vdom/patch.js';
+
+export function lifecycleMixin(Vue) {
+  Vue.prototype._update = function(vnode) {
+    const vm = this;
+    // 通过虚拟节点渲染出真实dom 替换掉 原来的真实的dom
+    vm.$el = patch(vm.$el, vnode);
+  }
+}
+```
+
+拿到旧的节点，也就是用户传入后保存到`vm.$el`的节点，然后使用生成的虚拟dom进行生成真实的dom节点，进行替换。
+
+```js
+// ./vdom/patch.js
+
+export function patch(oldVnode, vnode) {
+
+  const isRealElement = oldVnode.nodeType;
+  if (isRealElement) {
+    const oldElm = oldVnode;
+    const parentElm = oldElm.parentNode;
+    // 根据虚拟dom生成真实节点，然后插入到原节点的父节点也就是body里面，再把原节点删除，替换完成。
+    let el = createElm(vnode);
+    parentElm.insertBefore(el, oldElm.nextSibling)
+    parentElm.removeChild(oldElm);
+  }
+}
+
+function createElm(vnode) { // 根据虚拟节点创建真实的节点
+  let { tag, children, key, data, text } = vnode;
+  // 是标签就创建标签
+  if (typeof tag === 'string') {
+    vnode.el = document.createElement(tag);
+    updateProperties(vnode);
+    children.forEach(child => { // 递归创建儿子节点，将儿子节点扔到父节点中
+      return vnode.el.appendChild(createElm(child))
+    })
+  } else {
+    // 虚拟dom上映射着真实dom  方便后续更新操作
+    vnode.el = document.createTextNode(text)
+  }
+  // 如果不是标签就是文本
+  return vnode.el;
+}
+
+// 更新属性
+function updateProperties(vnode) {
+  let newProps = vnode.data;
+  let el = vnode.el;
+  for (let key in newProps) {
+    if (key === 'style') { // style
+      for (let styleName in newProps.style) {
+        el.style[styleName] = newProps.style[styleName];
+      }
+    } else if (key === 'class') {// class
+      el.className = newProps.class;
+    } else { // 其他属性
+      el.setAttribute(key, newProps[key]);
+    }
+  }
+}
+```
+
+截止就生成了真实的dom节点替换调之前的节点了，`<div id="app"><p>{{name}}</p></div>`替换成`<div id="app"><p>测试</p></div>`，vue的data里面的`name: '测试'`。
+
 
 
