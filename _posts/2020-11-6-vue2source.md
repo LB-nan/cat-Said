@@ -1080,4 +1080,7 @@ function updateProperties(vnode) {
 截止就生成了真实的dom节点替换调之前的节点了，`<div id="app"><p>{{name}}</p></div>`替换成`<div id="app"><p>测试</p></div>`，vue的data里面的`name: '测试'`。
 
 
+### 8、源码
+
+源码地址：`https://github.com/LB-nan/vueCode`，欢迎star。
 
