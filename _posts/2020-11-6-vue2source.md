@@ -6,7 +6,7 @@ description: vue2.x源码
 keywords: vue, javascript
 ---
 
-仿写一个简易版vue2.x的源码核心部分——数据劫持和模板编译(render函数、vdom)，加深对vue的理解。
+仿写一个简易版vue2.x的源码核心部分——数据劫持和模板编译(render函数、vdom)，巩固一下vue的知识点。
 
 ### 1、环境搭建
 
