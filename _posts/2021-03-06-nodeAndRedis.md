@@ -18,7 +18,8 @@ windows下载地址：`https://github.com/microsoftarchive/redis/releases/tag/wi
 
 `cd`到安装目录下，打开命令行工具，输入
 
-```
+```js
+
 .\redis-server.exe .\redis.windows.conf
 ```
 
@@ -28,19 +29,19 @@ windows下载地址：`https://github.com/microsoftarchive/redis/releases/tag/wi
 
 输入密码
 
-```
+```js
 auth 123456
 ```
 
 set一条数据
 
-```
+```js
 set a 1
 ```
 
 get一下刚才set进去的数据
 
-```
+```js
 get a
 ```
 
