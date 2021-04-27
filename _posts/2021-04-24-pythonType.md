@@ -97,6 +97,10 @@ import math
 13. string.lstrip()：截掉 string 左边的空格
 14. string.replace(str1, str2)：把 string 中的 str1 替换成 str2
 15. string.rstrip()：删除 string 字符串末尾的空格.
+16. string.strip(): 方法用于移除字符串头尾指定的字符（默认为空格）或字符序列。
+17. string.split(): 分割字符串
+18. string.format(): 字符串格式化
+19. string.center(n,'-'): 把字符串放中间，两边用- 补齐
 
 ### 3、列表类型 List
 
