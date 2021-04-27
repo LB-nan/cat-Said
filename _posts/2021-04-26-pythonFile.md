@@ -44,3 +44,23 @@ open(r'a\b\c.d.txt')  # r代表了这个是个纯字符串，\就不代表了反
 # 解决方案二
 open('/a/b/c.d.txt')
 ```
+
+### 3、with
+
+当打开了一个文件，操作完没有去关闭的时候就会造成浪费，所以要记着打开必须`f.close()`进行关闭，但是总会有遗忘，python提供了一个语法`with`
+
+`with`语句实质是上下文管理。
+
+```py
+# 相当于 f = open('./test/a.txt','r')，但是with会自动关闭文件，释放资源
+with open('./test/a.txt', mode='r') as f:
+  res = f.read()
+  print(res)
+
+# 可以打开多个文件
+with open('./test/a.txt', mode='r') as f, open('./test/b.txt', mode='r') as f1:
+  res = f.read()
+  res1 = f1.read()
+  print(res)
+  print(res1)
+```
