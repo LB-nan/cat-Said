@@ -105,3 +105,53 @@ func() # 结果为2
 装饰器指的是为装饰对象添加新的功能，装饰器与被装饰的对象均可以是任意可调用对象。装饰器的作用就是在不修改被装饰对象源代码和调用方式的前提下为被装饰对象添加额外的功能。
 
 可调用对象有函数，方法或者类。
+
+```py
+def outter(func):
+  def wrapper(*args, **kwargs):
+    res = func(*args, **kwargs)
+    # 进行一些其他操作 。。。。。然后把返回值返回回去
+    return res
+  return wrapper
+
+def home(name):
+  print(name)
+
+# 装饰home，把wrapper返回重新赋值给home，在wrapper里面调用home原函数
+home = outter(home)
+
+```
+
+可以使用语法糖
+
+```py
+# 在被装饰对象的上面单独一行写  @outter  就可以了   需要定义在上面
+
+# 原函数会有各种属性，也需要给wrapper添加上
+from functools import wraps
+def outter(func):
+  @wraps(func)  # 给wrapper装饰，给wrapper添加原函数的各种属性
+  def wrapper(*args, **kwargs):
+    res = func(*args, **kwargs)
+    # 进行一些其他操作 。。。。。然后把返回值返回回去
+    return res
+  return wrapper
+
+@outter   # 相当于home = outter(home)
+def home(name):
+  print(name)
+
+```
+
+可以多次装饰，装饰从下到上执行
+
+```py
+
+@deco1
+@deco2
+@deco3
+def index():
+  pass
+
+# 执行顺序是  3 => 2 => 1 
+```
