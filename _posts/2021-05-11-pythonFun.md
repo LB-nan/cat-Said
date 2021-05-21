@@ -155,3 +155,66 @@ def index():
 
 # 执行顺序是  3 => 2 => 1 
 ```
+
+### 7、生成器
+
+若函数体包含`yield`关键字，再调用函数，并不会执行函数体代码，得到的返回值即生成器对象，生成器内置有`__iter__`和`__next__`方法，所以生成器本身就是一个迭代器。
+
+有了`yield`关键字，我们就有了一种自定义迭代器的实现方式。`yield`可以用于返回值，但不同于`return`，函数一旦遇到`return`就结束了，而yield可以保存函数的运行状态挂起函数，用来返回多次值
+
+```py
+def eater():
+  while True:
+    food = yield
+    print(food)
+
+
+g = eater()     # 调用带有生成器关键字的函数，得到生成器对象
+next(g)         # 初始化函数，让函数执行一次，在yield的地方卡住，等待调用
+g.send(1)   # 调用 g.send() 执行一次
+g.send(2)
+
+"""
+包子1
+2
+"""
+```
+
+针对表达式形式的yield，生成器对象必须事先被初始化一次，让函数挂起在food=yield的位置，等待调用g.send()方法为函数体传值，g.send(None)等同于next(g)。
+
+可以使用装饰器来完成为所有表达式形式yield对应生成器的初始化操作
+
+```py
+def deco(func):
+    def wrapper(*args,**kwargs):
+        g=func(*args,**kwargs)
+        next(g)
+        return g
+    return wrapper
+
+@deco
+def eater():
+  while True:
+    food = yield
+    print(food)
+
+```
+
+### 7.1 迭代器
+
+迭代器是一个可以记住遍历的位置的对象。迭代器对象从集合的第一个元素开始访问，直到所有的元素被访问完结束。迭代器只能往前不会后退。迭代器有两个基本的方法：iter() 和 next()。
+
+有`__iter__`属性的类型都可以生成迭代器对象，调用`__iter__()`会返回一个迭代器对象，调用`__next__()`可以进行遍历
+
+```py
+l = [1,2,3,4,5]
+
+l = l.__iter__()
+
+print(l.__next__())
+print(l.__next__())
+print(l.__next__())
+print(l.__next__())
+print(l.__next__())
+
+```
