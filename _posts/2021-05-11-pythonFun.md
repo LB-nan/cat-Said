@@ -218,3 +218,43 @@ print(l.__next__())
 print(l.__next__())
 
 ```
+
+### 8、匿名函数
+
+```py
+# 需要写在一行内
+lambda x,y,z: x+y+z
+
+# 等同于
+def test(x,y,z):
+  return x+y+z
+
+# 使用
+fun = lambda x,y,z: x+y+z
+res = fun(1,2,3)
+print(res) # 6
+```
+
+匿名函数通常是在某些高阶函数内用。
+
+- 高阶函数：一个函数可以作为参数传给另外一个函数，或者一个函数的返回值为另外一个函数（若返回值为该函数本身，则为递归），满足其一则为高阶函数。
+
+比如一些常用的内置函数`map、reduce、filter`
+
+```py
+# map
+array = [1,2,3,4,5,6]
+res = map(lambda x: x*2, array)
+print(list(res)) # [2, 4, 6, 8, 10, 12]
+
+# reduce
+from functools import reduce
+array = [1,2,3,4,5,6]
+res = reduce(lambda x, y: x+y, array)
+print(res) # 21
+
+# filter
+array = [1,2,3,4,5,6]
+res = filter(lambda x: x > 2, array)
+print(list(res))  # [3, 4, 5, 6]
+```
