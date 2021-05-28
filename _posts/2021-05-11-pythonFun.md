@@ -258,3 +258,17 @@ array = [1,2,3,4,5,6]
 res = filter(lambda x: x > 2, array)
 print(list(res))  # [3, 4, 5, 6]
 ```
+
+### 9、类型提示
+
+类型提示 Type hinting（最低Python版本为3.5）
+
+python3新增类型提示功能，例如我们可以为函数增加类型提示信息，而不影响函数本身的执行。
+
+```py
+# 参数a：字符串类型，参数b：int类型，返回一个int类型
+# -> int  返回值是 int类型
+def func(a: str, b: int) -> int:
+  return b
+```
+
