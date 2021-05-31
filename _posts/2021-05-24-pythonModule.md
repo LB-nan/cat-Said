@@ -129,3 +129,39 @@ package/           # 顶级包
 3. 然后将申请的变量名指向生成的变量名
 
 另外，导入包的时候并不会导入包下所有的子模块和子包
+
+```py
+#根目录创建文件加 modules   创建 __init__.py
+from modules.modulea import funa
+from modules.moduleb import funb
+from modules.modulesc import func
+from modules.mod.moduled import fund
+
+# 或者
+from .mod.moduled import fund  # 相对
+
+# 安装这个目录创建文件，里面分别定义一个函数 funa / funb / func / fund
+
+#根目录创建 1.py 
+import modules as myM
+myM.funa()
+myM.funb()
+myM.func()
+myM.fund()
+
+# 如果报错找不到的话 需要设置一下路径
+
+import sys
+
+sys.path.append(r'url')  # url是模块的路径
+
+
+# --------------------------------
+# 或者这样引入也行
+from modules import funa
+
+funa()
+
+```
+
+包内部的引用推荐使用相对导入，绝对导入是没有限制的，绝对导入更通用一点。
