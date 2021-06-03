@@ -165,3 +165,61 @@ funa()
 ```
 
 包内部的引用推荐使用相对导入，绝对导入是没有限制的，绝对导入更通用一点。
+
+### 4、常用模块
+
+python中常用的模块及用法
+
+#### 4.1 time
+
+时间模块
+
+```py
+# 获取时间戳
+print(time.time())
+# 获取本地时区时间，可以获得更详细的内容
+print(time.localtime())  #time.struct_time(tm_year=2021, tm_mon=6, tm_mday=3, tm_hour=15, tm_min=12, tm_sec=38, tm_wday=3, tm_yday=154, tm_isdst=0)
+
+# 获取 年月日 时分秒
+print(time.strftime('%Y-%m-%d %H:%M:%S'))
+print(time.strftime('%Y-%m-%d %X'))
+
+```
+
+#### 4.2 datetime
+
+datetime模块提供了处理日期和时间的类，既有简单的方式，又有复杂的方式。它虽然支持日期和时间算法，但其实现的重点是为输出格式化和操作提供高效的属性提取功能。
+
+参考链接：`https://blog.csdn.net/gty931008/article/details/80254806`
+
+常用的：
+
+1. datetime.date: 表示日期
+2. datetime.time: 表示时间
+3. datetime.datetime: 表示日期时间
+
+```py
+print(datetime.datetime.now())  #获取年月日时分秒
+
+print(datetime.datetime.now() + datetime.timedelta(days=3))  # 获取三天后的时间
+```
+
+时间戳和格式化的时间可以相互转换，但是需要通过结构化时间来做转换，时间戳和格式化时间不能直接转。
+
+```py
+import time
+
+# 结构化时间转为时间戳
+timer = time.localtime()  # 结构化时间
+print(time.mktime(timer))  # 转成时间戳
+
+
+# 时间戳转换为结构化时间
+time.localtime(time.time())
+
+# 结构化时间转为格式化时间
+print(time.strftime('%Y-%m-%d %H:%M:%S'))
+
+# 格式化时间转为结构化时间
+print(time.strptime('2020-02-02 22:22:22', '%Y-%m-%d %H:%M:%S'))
+```
