@@ -184,6 +184,9 @@ print(time.localtime())  #time.struct_time(tm_year=2021, tm_mon=6, tm_mday=3, tm
 print(time.strftime('%Y-%m-%d %H:%M:%S'))
 print(time.strftime('%Y-%m-%d %X'))
 
+# 等待5秒
+time.sleep(5)
+
 ```
 
 #### 4.2 datetime
@@ -222,4 +225,165 @@ print(time.strftime('%Y-%m-%d %H:%M:%S'))
 
 # 格式化时间转为结构化时间
 print(time.strptime('2020-02-02 22:22:22', '%Y-%m-%d %H:%M:%S'))
+
+#把时间戳直接转化为结构化时间
+import datetime
+print(datetime.datetime.fromtimestamp(time.time()))
+
+```
+
+一些常用方法：
+
+```py
+datetime.date.today() # 本地日期对象,(用str函数可得到它的字面表示(2014-03-24))
+datetime.date.isoformat(obj) # 当前[年-月-日]字符串表示(2014-03-24)
+datetime.date.fromtimestamp() # 返回一个日期对象，参数是时间戳,返回 [年-月-日]
+datetime.date.weekday(obj) # 返回一个日期对象的星期数,周一是0
+datetime.date.isoweekday(obj) # 返回一个日期对象的星期数,周一是1
+datetime.date.isocalendar(obj) # 把日期对象返回一个带有年月日的元组
+
+
+# datetime对象：
+datetime.datetime.today() # 返回一个包含本地时间(含微秒数)的datetime对象 2014-03-24 23:31:50.419000
+datetime.datetime.now([tz]) # 返回指定时区的datetime对象 2014-03-24 23:31:50.419000
+datetime.datetime.utcnow() # 返回一个零时区的datetime对象
+datetime.fromtimestamp(timestamp[,tz]) # 按时间戳返回一个datetime对象，可指定时区,可用于strftime转换为日期表示 
+datetime.utcfromtimestamp(timestamp) # 按时间戳返回一个UTC-datetime对象
+datetime.datetime.strptime(‘2014-03-16 12:21:21‘,”%Y-%m-%d %H:%M:%S”) # 将字符串转为datetime对象
+datetime.datetime.strftime(datetime.datetime.now(), ‘%Y%m%d %H%M%S‘) # 将datetime对象转换为str表示形式
+datetime.date.today().timetuple() # 转换为时间戳datetime元组对象，可用于转换时间戳
+datetime.datetime.now().timetuple()
+time.mktime(timetupleobj) # 将datetime元组对象转为时间戳
+time.time() # 当前时间戳
+time.localtime
+time.gmtime
+```
+
+#### 4.3 random
+
+随机模块
+
+```py
+import random
+
+# 随机出大于0小于1的任意小数
+print(random.random()) 
+
+# 随机出一个1~3的任意整数，包括1和3   1 - 2 - 3
+print(random.randint(1, 3))  
+
+# 随机出大于等于1且小于3的任意整数， 1 - 2
+print(random.randrange(1, 3))  
+
+# 在参数列表内随机选择一个数
+print(random.choice([1, 2, 3, '4'])) 
+
+# 接受两个参数，第一个是一个列表，里面有一堆数据，第二个参数是指定选择几个数
+# 在[1, 2, 3, '4']里面随机选择2个数出来
+print(random.sample([1, 2, 3, '4'], 2))  
+
+# 随机选大于1小于3的小数
+print(random.uniform(1, 3)) 
+
+# 打乱列表内数据的位置
+arr = [1,2,3,4,5,6,7,8]
+random.shuffle(arr)
+print(arr)
+
+
+# 随机验证码
+res = ''
+for i in range(6):
+  # chr()：根据ASCII码的位置来取对应的字符   ord()：根据传入的字母获取ASCII码的位置
+  s1 = chr(random.randint(65, 90))
+  s2 = str(random.randint(0, 9))
+  res += random.choice([s1, s2])
+print(res)
+```
+
+#### 4.4 OS模块
+
+os(opreate system)模块提供了非常丰富的方法用来处理文件和目录,是python标准库中的一个用于访问操作系统功能的模块，使用os模块中提供的接口可以实现跨平台访问。
+
+主要用于：
+
+1. 获取平台信息
+2. 对目录的操作
+3. 判断操作
+
+常用API：
+
+```py
+import os
+
+##### 系统操作
+
+# 获取系统路径的分隔符  Windows： \\  Linux： /  macOS: /
+print(os.sep)
+# 获取使用的工作平台  Windows：nt   linux/unix：posix
+print(os.name)
+# 获取环境变量  
+print(os.getenv('path'))
+# 获取当前的路径  绝对路径
+print(os.getcwd())
+
+
+#### 目录操作  更多参考： https://www.runoob.com/python/os-file-methods.html
+
+# 返回制定目录下的所有文件和目录名
+os.listdir(dirname)
+# 创建一个目录
+os.mkdir(dirname)
+# 删除一个目录，需要是空目录
+os.rmdir(dirname)
+# 跳转到制定的目录中
+os.chdir()
+# 可生成多层递归目录
+os.makedirs('dirname1/dirname2') 
+# 若目录为空，则删除，并递归到上一级目录，如若也为空，则删除，依此类推   
+os.removedirs('dirname')    
+# 重命名文件/目录
+os.rename("oldname","newname")  
+# 获取当前目录的父目录字符串名
+os.pardir 
+
+
+###### os.path的操作
+
+
+# 返回文件名
+os.path.basename(path)
+
+# 返回文件路径
+os.path.dirname(path)
+
+# 获取文件大小，如果name是目录返回OL
+os.path.getsize(name)
+
+# 获取绝对路径
+os.path.abspath(name)
+
+#  拼接目录与文件名或目录, 将多个路径组合后返回，第一个绝对路径之前的参数将被忽略
+os.path.join(path, name)
+
+#  将path分割成目录和文件名二元组返
+os.path.split(path)
+
+#  返回path所指向的文件或者目录的最后存取时间
+os.path.getatime(path)
+
+#  返回path所指向的文件或者目录的最后修改时间
+os.path.getmtime(path)
+
+# 如果path存在，返回True；如果path不存在，返回False
+os.path.exists(path)
+
+#  如果path是绝对路径，返回True
+os.path.isabs(path)
+
+#  如果path是一个存在的文件，返回True。否则返回False
+os.path.isfile(path)
+
+#  如果path是一个存在的目录，则返回True。否则返回False
+os.path.isdir(path)
 ```
