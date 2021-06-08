@@ -326,6 +326,10 @@ print(os.name)
 print(os.getenv('path'))
 # 获取当前的路径  绝对路径
 print(os.getcwd())
+# 执行操作系统命令
+os.system() 
+# 全局环境变量
+os.environ 
 
 
 #### 目录操作  更多参考： https://www.runoob.com/python/os-file-methods.html
@@ -357,7 +361,7 @@ os.path.basename(path)
 # 返回文件路径
 os.path.dirname(path)
 
-# 获取文件大小，如果name是目录返回OL
+# 获取文件大小 单位是字节，如果name是目录返回OL
 os.path.getsize(name)
 
 # 获取绝对路径
