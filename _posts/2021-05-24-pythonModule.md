@@ -391,3 +391,15 @@ os.path.isfile(path)
 #  如果path是一个存在的目录，则返回True。否则返回False
 os.path.isdir(path)
 ```
+
+#### 4.5 sys模块
+
+该模块提供对解释器使用或维护的一些变量的访问，以及与解释器强烈交互的函数。它始终可用。
+
+```py
+# 命令行参数List，第一个元素是程序本身路径, 后续的是运行的时候接受的参数
+sys.argv 
+
+# 返回模块的搜索路径，初始化时使用PYTHONPATH环境变量的值 
+sys.path 
+```
