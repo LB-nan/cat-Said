@@ -403,3 +403,30 @@ sys.argv
 # 返回模块的搜索路径，初始化时使用PYTHONPATH环境变量的值 
 sys.path 
 ```
+
+#### 4.6 json & pickle
+
+序列化和反序列化，json更通用，pickle是适用于python的格式。python内部数据存储只用pickle，如果需要跨平台交互就使用json。
+
+```py
+import json
+
+str='{"a":"111"}'
+
+# 序列化
+print(json.dumps(str))  # "{\"a\":\"111\"}"   type <class str>
+
+# 反序列化
+print(json.loads(json.dumps(str)))  # {"a":"111"}
+
+
+
+import pickle
+
+
+# 序列化
+res = pickle.dumps({1,2,3,4})
+
+# 反序列化
+r = pickle.loads(res)
+```
