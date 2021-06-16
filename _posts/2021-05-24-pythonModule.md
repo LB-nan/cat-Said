@@ -430,3 +430,31 @@ res = pickle.dumps({1,2,3,4})
 # 反序列化
 r = pickle.loads(res)
 ```
+
+#### 4.6 hashlib
+
+```py
+import hashlib
+
+# 使用md5加密，可以使用其他  sha1 sha256 之类
+m = hashlib.md5()
+m.update('hello'.encode('utf8'))
+res = m.hexdigest()
+print(res)
+```
+
+另外：普通的密码加密容易被撞库撞出来，提升密码强度可以加盐。
+
+#### 4.7 日志模块
+
+默认打印到终端,有不同的级别，不同的级别不同的方法然后不同的显示
+
+```py
+import logging
+
+logging.debug('调试debug')
+logging.info('消息info')
+logging.warning('警告warn')
+logging.error('错误error')
+logging.critical('严重critical')
+```
