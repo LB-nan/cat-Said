@@ -80,3 +80,33 @@ print(obj.__getName())   # 'Test' object has no attribute '__getName'
 print(Test._Test__age)   # 18  可以通过这种语法获取到
 
 ```
+
+#### 2.1 @property
+
+python的@property是python的一种装饰器，是用来修饰方法的。可以使用@property装饰器来创建只读属性，@property装饰器会将方法转换为相同名称的只读属性,可以与所定义的属性配合使用，这样可以防止属性被修改。
+
+具体查看`https://zhuanlan.zhihu.com/p/64487092`
+
+### 3、继承
+
+继承是一种创建新类的方式，在Python中，新建的类可以继承一个或多个父类，新建的类可称为子类或派生类，父类又可称为基类或超类。
+
+```py
+class Parent1:
+  pass
+
+class Parent2:
+  pass
+
+class Sub1(Parent1): #单继承
+  pass
+
+class Sub2(Parent1,Parent2): #多继承
+  pass
+```
+
+通过类的内置属性__bases__可以查看类继承的所有父类
+
+```py
+Sub2.__bases__
+```
