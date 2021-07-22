@@ -110,3 +110,41 @@ class Sub2(Parent1,Parent2): #多继承
 ```py
 Sub2.__bases__
 ```
+
+多继承需要注意`菱形问题`
+
+- 菱形问题：基类 A B C D, B和C继承至A， D多继承B和C，形成菱形继承问题
+
+```py
+class A(object):
+    def test(self):
+        print('A')
+
+
+class B(A):
+    def test(self):
+        print('B')
+
+
+class C(A):
+    def test(self):
+        print('C')
+
+
+class D(B,C):
+    pass
+
+
+obj = D()
+obj.test() # B
+```
+
+在继承的时候，py会生成一个表，从最后的一个类一直查找到最开始的类，生成一个线性表，然后继承是从左到右查找，找到就完事，所以`D`身上没有，就去找`B`,如果把`class D(B,C):`换成`class D(C,B):`就会去先找`C`，就会打印`C`
+
+这个表称为:`MRO 方法解析顺序(MRO)列表`
+
+查看`MRO`列表
+
+```py
+D.mro()
+```
