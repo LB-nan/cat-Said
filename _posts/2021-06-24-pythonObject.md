@@ -148,3 +148,131 @@ obj.test() # B
 ```py
 D.mro()
 ```
+
+多继承会让代码的可读性变差，python提供了`mixins`机制
+
+#### 3.1 mixins机制
+
+在多继承背景下尽可能的提升多继承的可读性。它没有改变多继承的本质，只是通过一些命名规范、编写规范来提高可读性写代码。
+
+```py
+class A(object):
+    def test(self):
+        print('A')
+
+class TobMixin:
+    def onlyB();
+        print('b')
+
+class B(A, TobMixin):
+    def test(self):
+        print('B')
+
+
+class C(A):
+    def test(self):
+        print('C')
+
+
+class D(B,C):
+    pass
+
+```
+
+B和C都继承A，但是B有点额外需求，而C不需要，所以不能在A里面加，只能再新建一个新类给B，然而太多父类容易晕，就在命名方面增强可读性。
+
+上面代码里的`TobMixin`类就是一个`mixin`机制的写法，通过给父类改名字，让可读性提高。看到这个类的时候就知道它是归属于谁的父类。可以给B里面再混入一些功能。
+
+`mixins`机制的类通常以`Mixin\able\ible`为后缀结尾、`mixins`机制的类必须职责单一，如果有多个功能就写多个类，反正可以多继承，子类再没有这个mixin类的时候也不影响功能。
+
+#### 3.2 子类调用父类方法
+
+有两种方式
+
+1. 具体写明调用某个类下的某个函数方法
+2. 在子类里面调用`super()`来调用父类提供的方法
+
+```py
+class People:
+  def __init__(self, name):
+    self.name = name
+
+class Terch(People):
+  def __init__(self, name, age, level):
+    self.name = name
+    self.age = age
+    self.level = level
+
+# Terch类继承People，但是不想额外写name，需要复用父类的的时候，有两种方式
+
+# 1. 直接调用
+class Terch(People):
+  def __init__(self, name, age, level):
+    People.__init__(self, name)
+    self.age = age
+    self.level = level
+
+# 2. super()
+class Terch(People):
+  def __init__(self, name, age, level):
+    # python2写法
+    super(Terch, People).__init__(self, name)
+    # python3
+    super().__init__(self, name)
+    self.age = age
+    self.level = level
+
+```
+
+`super()`：调用super()函数会得到一个对象，会参照当前类的MRO去访问当前类的父类里面查找。
+
+### 4、多态
+
+多态指的是一类事物有多种形态，多态性指的是可以在不用考虑对象具体类型的情况下而直接使用对象，这就需要在设计时，把对象的使用方法统一成一种。
+
+Python中一切皆对象，本身就支持多态性，多态性的好处在于增强了程序的灵活性和可扩展性。
+
+```py
+class Animal:
+  def eat(self):
+    print('吃东西')
+
+class People(Animal):
+  def eat(self):
+    print('人')
+    super().eat()
+
+class Pig(Animal):
+  def eat(self):
+    print('pig')
+    super().eat()
+
+pig = Pig()
+people = People()
+
+# 定义统一的解控，接收传入的不同对象
+def animal_eat(animal):
+  animal.eat()
+
+
+animal_eat(pig)
+animal_eat(people)
+
+
+# --------------------------------------
+
+import abc
+
+# 指定metaclass属性将类设置为抽象类，抽象类本身只是用来约束子类的，不能被实例化
+class Animal(metaclass=abc.ABCMeta):
+    @abc.abstractmethod # 该装饰器限制子类必须定义有一个名为talk的方法
+    def talk(self): # 抽象方法中无需实现具体的功能
+        pass
+
+class Cat(Animal): # 但凡继承Animal的子类都必须遵循Animal规定的标准
+    def talk(self):
+        pass
+
+cat=Cat()
+cat.talk()
+```
