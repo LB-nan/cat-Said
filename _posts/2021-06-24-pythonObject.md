@@ -340,3 +340,66 @@ stu1.stumethod()
 ```
 
 总结：绑定方法与非绑定方法的使用：若类中需要一个功能，该功能的实现代码中需要引用对象则将其定义成对象方法、需要引用类则将其定义成类方法、无需引用类或对象则将其定义成静态方法。
+
+### 5、对象的属性
+
+可以用`hasattr`来判断是否存在某个属性，用`getattr`获取某个属性，还有`setattr、delattr`
+
+```py
+class Teacher:
+    def __init__(self, name):
+        self.name =name
+
+t=Teacher('liming')
+
+hasattr(t,'name') 
+
+getattr(t,'name',None) # 不存在name属性的话返回默认值None
+
+setattr(t,'age',12) 
+
+delattr(t,'age') 
+```
+
+可以通过这些方法来十分灵活的操作对象的属性，这种机制叫作`反射`.
+
+### 6、元类
+
+元类是类的类。
+
+class关键字在帮我们创建类时必然会调用元类`type`，自定义元类的话必须继承自`type`，只有继承了type类才能称之为一个元类
+
+```py
+# 自定义元类
+class MyTypeClass(type):
+    pass
+
+# 继承自定义元类
+class MyClass(metaclass=MyTypeClass):
+    pass
+
+```
+
+在继承元类的时候，调用了`MyTypeClass`的`__call__`内置方法，然后在`__call__`内部调用了`MyClass`的`__new__`方法然后调用了`MyClass`的`__init__`方法
+
+```py
+
+class MyTypeClass(type):
+  def __call__(self, *args, **kwargs):
+      # 生成一个对象
+      obj = self.__new__(self)
+
+      # 初始化对象
+      self.__init__(obj, *args, **kwargs)
+
+      # 可以在这里控制对象的各种属性
+
+      # 返回一个对象
+      return obj
+```
+
+在调用类创建一个对象的时候会发生三件事
+
+1. 产生一个空对象
+2. 调用__init__初始化对象
+3. 返回这个对象
