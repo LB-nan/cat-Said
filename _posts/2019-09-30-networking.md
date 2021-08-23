@@ -190,3 +190,7 @@ ARP协议：ARP协议寻找MAC地址就是靠广播，发一个广播包，查�
 > ping 是基于 ICMP 协议工作的,常用的 ping 就是查询报文，是一种主动请求，并且获得主动应答的 ICMP 协议。ICMP 全称 Internet Control Message Protocol，就是互联网控制报文协议。
 > ICMP 相当于网络世界的侦察兵。两种类型的 ICMP 报文，一种是主动探查的查询报文，一种异常报告的差错报文；
 > ping 使用查询报文，Traceroute 使用差错报文。
+
+### 6、网络、传输层
+
+传输层协议：tcp、udp
