@@ -64,3 +64,107 @@ CPU的性能是有限的，每个进程都需要占用CPU资源，想要多个�
 1. 当一个程序创建然后提交会进入就绪态
 2. 就绪态会等操作系统进行进程调度，分配时间片，执行完就完了
 3. 如果在运行态中，时间片用完还没有执行完，或者进行IO操作，会进入阻塞态，然后IO操作拿到值了，或者其他行为触发了进程，然后重新进入就绪态，然后重新分配时间片，然后重新运行。重复以上过程直到运行完成，进程释放。
+
+### 4、同步异步
+
+同步和异步描述的是任务的提交方式
+
+- 同步：在任务提交之后，原地等待任务的返回结果，等待过程中不做任何其他事，程序会卡住
+- 异步：在任务提交之后，不原地等待任务的返回结果，直接去做其他事情，等待任务的返回结果回来了然后进行回调，程序不会卡住
+
+### 5、阻塞非阻塞
+
+描述的是程序的运行状态
+
+### 6、开启进程的方式
+
+在Windows操作系统下，创建进程一定要在`main`内创建，因为在Windows操作系统下创建进程类似于模块导入的方式，会从上往下依次执行代码。在Linux下会直接将代码拷贝一份。
+
+创建进程就是在内存中申请一块内存空间将需要的代码放进去，一个进程对应一块内存空间，多个进程的内存空间互不干扰，进程与进程之间默认情况下无法直接交互，数据也相互隔离(子进程也不会修改主进程的数据)，需要交互可以借助其他第三方模块。
+
+```py
+from multiprocessing import Process
+import time
+
+# 开启进程的方式一
+def task(name):
+    print('%s is running'%name)
+    time.sleep(3)
+    print('%s is over' %name)
+
+
+if __name__ == '__main__':
+    # args：容器类型，容器类型里面哪个只有一个元素也加逗号隔开
+    p = Process(target=task, args=('task进程',))
+    p.start() # 开启进程
+    print('主进程')
+
+
+# 方式二
+class MyProcess(Process):
+  def run(self):
+    print('running')
+    time.sleep(1)
+    print('done')
+
+
+if __name__ == '__main__':
+  p = MyProcess()
+  p.start()
+  print('主进程')
+
+```
+
+### 7、join方法
+
+join方法是让主进程等待子进程代码运行结束之后，再继续执行，不影响其他子进程的执行。相当于把异步改为了同步。
+
+```py
+from multiprocessing import Process
+import time
+
+def task(name):
+    print('%s is running'%name)
+    time.sleep(3)
+    print('%s is over' %name)
+
+
+if __name__ == '__main__':
+    # args：容器类型，容器类型里面哪个只有一个元素也加逗号隔开
+    p = Process(target=task, args=('task进程',))
+    p.start() # 开启进程
+    p.join() # 等待子进程执行成功
+    print('主进程')
+
+```
+
+当有多个进程的时候，进程执行顺序不是有序的，可能进程1先执行/执行完毕也可能进程3先执行/执行完毕，创建了多个进程只能代表有多个进程，不能确定进程执行的顺序就是创建的顺序。
+
+```py
+from multiprocessing import Process
+import time
+
+def task(name):
+    print('%s is running'%name)
+    time.sleep(3)
+    print('%s is over' %name)
+
+
+if __name__ == '__main__':
+    # args：容器类型，容器类型里面哪个只有一个元素也加逗号隔开
+    p1 = Process(target=task, args=('task进程1',))
+    p2 = Process(target=task, args=('task进程2',))
+    p3 = Process(target=task, args=('task进程3',))
+    p1.start()  # 开启进程
+    p2.start()  # 开启进程
+    p3.start()  # 开启进程
+    start_time = time.time()
+    p1.join()
+    p2.join()
+    p3.join() 
+
+    print('主进程', time.time() - start_time)  # 主进程 3.089634895324707
+
+```
+
+可能会迷惑为什么最后输出3.x秒，因为在等待第一个进程的1s的时候，第二三个进程也同样在执行了。
