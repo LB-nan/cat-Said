@@ -168,3 +168,84 @@ if __name__ == '__main__':
 ```
 
 可能会迷惑为什么最后输出3.x秒，因为在等待第一个进程的1s的时候，第二三个进程也同样在执行了。
+
+### 8、进程对象及其他方法
+
+进程id：每个进程都有对应的操作系统分配的pid
+
+- windows：cmd里输入`tasklist`查看，查看具体的进程可以 `tasklist |findstr pid`
+- Mac：进入终端之后输入  `ps aux`查看, 查看具体的进程可以`ps aux |grep pid`
+
+在python里面代码查看,有两种方法
+
+```py
+from multiprocessing import Process, current_process
+import time
+import os
+
+def task():
+    # 通过current_process().pid查看
+    print('pid: %s' % current_process().pid )
+    # os.getpid() 查看
+    print('pid: %s' % os.getpid())
+    print('子进程里获取父进程id: %s' % os.getppid())
+    
+
+if __name__ == '__main__':
+    # args：容器类型，容器类型里面哪个只有一个元素也加逗号隔开
+    p1 = Process(target=task)
+    p1.start()  # 开启进程 
+    print('主进程:', current_process().pid)
+    print('主进程:', os.getpid())
+    print('主进程的父进程pid:', os.getppid())
+
+'''
+# 输出结果：
+主进程: 4639
+主进程: 4639
+主进程的父进程pid: 4638
+pid: 4641
+pid: 4641
+子进程里获取父进程id: 4639
+'''
+```
+
+杀死进程
+
+```py
+p1.terminate() # 杀死进程
+```
+
+判断当前进程是否存活
+
+```py
+print(p1.is_alive())
+```
+
+### 9、僵尸进程/孤儿进程
+
+僵尸进程：当开设了子进程之后，该进程死后不会立刻释放，因为需要让父进程能够看到它开设的子进程的一些基本信息，如 pid 运行时间等，所有的进程都会进入僵尸进程阶段。
+
+孤儿进程：子进程存活，父进程挂掉，子进程的pid没法回收，操作系统会开设一个功能专门回收孤儿进程。
+
+### 10、守护进程
+
+是生存期长的一种进程，没有控制终端。它们常常在系统引导装入时启动，仅在系统关闭时才终止。在程序里表现为随着主进程开启开启，主进程死亡而死亡的进程。
+
+```py
+from multiprocessing import Process
+import time
+
+def task():
+    print('子进程正常')
+    time.sleep(3)
+    print('子进程GG')
+
+
+if __name__ == '__main__':
+    p = Process(target=task)
+    p.daemon = True  # 设置为守护进程，在开启之前设置才有效
+    p.start()  # 开启进程, 因为执行完子进程启动，然后主进程直接死亡，所以子进程也会跟着死亡
+    print('主进程GG')
+
+```
