@@ -249,3 +249,147 @@ if __name__ == '__main__':
     print('主进程GG')
 
 ```
+
+### 11、互斥锁
+
+多个进程操作同一份数据的时候，会出现错乱的问题，针对这个问题，解决方案就是加锁，将并发改成串行，牺牲效率保证数据的安全。
+
+```py
+from multiprocessing import Process, Lock
+import multiprocessing
+import time
+
+tickets = 1
+
+def run(i, mutex):
+    global tickets
+    # 抢锁
+    mutex.acquire()
+    # 省略买票环节,假设下面有很多买票过程
+    time.sleep(2)
+    print('tickets:', tickets)
+    if(tickets == 1):
+        print('%s抢票成功：' % i)
+    else :
+        print('%s抢票失败：' % i)
+    # 释放锁
+    mutex.release()
+
+
+if __name__ == '__main__':
+    # 解决Mac的问题
+    multiprocessing.set_start_method('fork')
+    # 创建锁
+    mutex = Lock()
+    for i in range(1, 11):
+        p = Process(target=run, args=('%s' %i, mutex))
+        p.start()
+        # 模拟需求，需要在这里操作，因为放到进程里面之后，进程之间数据隔离，不会修改到全局
+        tickets = 0
+
+'''
+tickets: 1
+1抢票成功：
+tickets: 0
+2抢票失败：
+tickets: 0
+3抢票失败：
+tickets: 0
+4抢票失败：
+tickets: 0
+5抢票失败：
+tickets: 0
+6抢票失败：
+tickets: 0
+7抢票失败：
+tickets: 0
+8抢票失败：
+tickets: 0
+9抢票失败：
+tickets: 0
+10抢票失败：
+'''
+
+```
+
+其他还有各种锁，比如行锁，表锁....都是将并发改成串行
+
+### 12、进程通信/队列
+
+队列`Queue`模块
+
+```py
+import queue
+
+q = queue.Queue(5) # 创建队列，可以传数字，代表队列的最大数据量，默认32767
+
+#  存数据,如果数据存满了，后续还有数据要存放进来，程序会阻塞卡住
+q.put(111)
+q.put(222)
+
+# 判断当前队列是否满了
+print(q.full())
+
+# 取
+v1 = q.get()
+v2 = q.get()
+# 当取的时候，队列里没有数据了，程序会原地阻塞 卡住
+# v3 = q.get()
+# get_nowait()方法如果取不到数据会直接报错：_queue.Empty
+v3 = q.get_nowait()
+
+# 判断当前队列是否空了
+print(q.empty())
+
+# 取数据的时候，如果没有，原地等待3s，还没就报错
+v4 = q.get(timeout=3)
+
+print(v1)
+print(v2)
+# print(v3)
+
+```
+
+ps: `q.full() q.empty() q.get_nowait()`在多进程的情况下是不精确的
+
+ps: Mac进程需要设置这个`multiprocessing.set_start_method('fork')`的问题参考：https://blog.csdn.net/wujiaqi0921/article/details/78192879
+
+### 13、IPC机制
+
+进程与进程之间通信
+
+```py
+# 主进程和子进程通信
+from multiprocessing import Process, Queue
+
+def producer(q):
+    q.put('一条数据')
+    print('hello')
+
+if __name__ == '__main__':
+  q = Queue()
+  p = Process(target=producer, args=(q,))
+  p.start()
+  q.get()
+
+# 进程与进程通信
+from multiprocessing import Process, Queue
+import time
+import multiprocessing
+
+def producer(q):
+    q.put('一条数据')
+
+
+def consumer(q):
+    print(q.get())
+
+if __name__ == '__main__':
+    # Mac的环境有问题需要加这个
+    multiprocessing.set_start_method('fork')
+    q = Queue()
+    p = Process(target=producer, args=(q,))
+    p1 = Process(target=consumer, args=(q,))
+    p.start()
+    p1.start()
+```
