@@ -1,12 +1,12 @@
 ---
 layout: post
-title: 并发
+title: Python并发
 categories: Python
 description: python 并发
 keywords: python 并发
 ---
 
-并发、多线程
+并发、进程、线程、进程间通信、消费者生产者模型等相关
 
 ### 1、并发、并行
 
@@ -314,7 +314,7 @@ tickets: 0
 
 其他还有各种锁，比如行锁，表锁....都是将并发改成串行
 
-### 12、进程通信/队列
+### 12、进程通信/消息队列
 
 队列`Queue`模块
 
@@ -392,4 +392,101 @@ if __name__ == '__main__':
     p1 = Process(target=consumer, args=(q,))
     p.start()
     p1.start()
+```
+
+### 14、生产者消费者模型
+
+生产者：生产/制造东西的；消费者：消费/处理东西的
+
+生产者和消费者不是直接做交互的，需要借助媒介(消息队列)进行交互。
+
+```py
+from multiprocessing import Process, Queue
+import time
+import random
+import multiprocessing
+
+
+def producer(name, food, q):
+    for i in range(5):
+        data = '%s生产了%s,%s个'%(name, food, i)
+        time.sleep(random.randint(1,3))
+        print(data)
+        q.put(data)
+
+
+def consumer(name, q):
+    while True:
+      food = q.get()
+      if food is None: break
+      time.sleep(random.randint(1,3))
+      print('%s吃了%s' %(name, food))
+
+if __name__ == '__main__':
+    multiprocessing.set_start_method('fork')
+    q = Queue()
+    p1 = Process(target=producer, args=('生产者1', '包子', q))
+    p2 = Process(target=producer, args=('生产者2', '饺子', q))
+    c1 = Process(target=consumer, args=('消费者1', q))
+    c2 = Process(target=consumer, args=('消费者2', q))
+    p1.start()
+    p2.start()
+    c1.start()
+    c2.start()
+    p1.join()
+    q.put(None)
+    p2.join()
+    q.put(None)
+
+```
+
+这样的可以实现这个问题，但是需要根据生产者的数量来put一个结束标识，可以使用`JoinableQueue`队列来完成
+
+- JoinableQueue：每当队列里存入一个数据的时候，内部会有一个计数器+1，每当调用`task_done()`的时候，计数器-1，当计数器为0的时候执行`q.join()`
+
+把上面的代码优化一下
+
+```py
+from multiprocessing import Process, Queue, JoinableQueue
+import time
+import random
+import multiprocessing
+
+
+def producer(name, food, q):
+    for i in range(5):
+        data = '%s生产了%s,%s个'%(name, food, i)
+        time.sleep(random.randint(1,3))
+        print(data)
+        q.put(data)
+
+
+def consumer(name, q):
+    while True:
+      food = q.get()
+      time.sleep(random.randint(1,3))
+      print('%s吃了%s' %(name, food))
+      # 告诉队列 已经取出来了一个数据并且处理完毕
+      q.task_done()
+
+
+if __name__ == '__main__':
+    multiprocessing.set_start_method('fork')
+    q = JoinableQueue()
+    p1 = Process(target=producer, args=('生产者1', '包子', q))
+    p2 = Process(target=producer, args=('生产者2', '饺子', q))
+    c1 = Process(target=consumer, args=('消费者1', q))
+    c2 = Process(target=consumer, args=('消费者2', q))
+    p1.start()
+    p2.start()
+    # 将消费者子进程设置为守护进程，当主进程执行完毕之后，杀死子进程
+    c1.daemon = True
+    c2.daemon = True
+    c1.start()
+    c2.start()
+    p1.join()
+    p2.join()
+    # 等待队列中所有的数据被取完然后执行数据
+    q.join() 
+
 ```
