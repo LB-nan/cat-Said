@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Python并发
+title: Python并发、进程
 categories: Python
 description: python 并发
 keywords: python 并发
 ---
 
-并发、进程、线程、进程间通信、消费者生产者模型等相关
+并发、进程、进程间通信、消费者生产者模型等相关
 
 ### 1、并发、并行
 
