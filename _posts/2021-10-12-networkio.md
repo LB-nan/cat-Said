@@ -149,3 +149,80 @@ while True:
 ```
 
 非阻塞IO模型会长时间占用CPU并且不干活，持续轮询，极度消耗cpu资源。
+
+### 4、IO多路复用
+
+操作系统提供的监管机制能够帮忙监管socket对象和conn对象，并且可以监管多个，只要有对象触发了就立刻返回可执行对象。
+
+IO的两个阶段的第一个阶段在非阻塞IO模型下是由写代码监管，使用多路复用是交给操作系统监管，虽然还是有这个阶段，但是不需要写代码了。
+
+当IO对象只有一个的时候，IO多路复用的效率甚至是没有阻塞IO高的，但是IO多路复用可以一次性监管很多对象，并且监管机制是操作系统本身有的，使用的话需要导入对应的模块`select`
+
+- select模块可以监管`socket/conn对象`
+
+IO多路复用是针对非阻塞IO的一个优化，具体实现
+
+```py
+# 服务端
+import socket, select
+
+server = socket.socket()
+server.bind(('127.0.0.1', 8081))
+server.listen(5)
+# 将所有的网络阻塞变为非阻塞
+server.setblocking(False)
+
+read_list = [server]
+
+# res = select.select(read_list, [], [])
+# print(res)  # ([<socket.socket fd=3, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8081)>], [], [])
+while True:
+    # 该方法返回三个对象，解构出三个变量，只用了第一个，我们只监听第一个
+    r_list, w_list, x_list = select.select(read_list, [], [])
+
+    for i in r_list:
+        if i is server:
+            conn, addr = i.accept()
+            read_list.append(conn)
+        else:
+            res = i.recv(1024)
+            if len(res) == 0:
+                i.close()
+                read_list.remove(i)
+                continue
+            i.send(b'dddddd')
+
+# 客户端
+
+from socket import *
+
+client = socket(AF_INET, SOCK_STREAM)
+client.connect(('127.0.0.1', 8081))
+
+while True:
+  msg = input('请输入》》》').strip()
+  if len(msg) == 0:
+    continue
+  client.send(msg.encode('utf-8'))
+
+  data = client.recv(1024)
+  print(data.decode('utf-8'))
+
+```
+
+实现多路复用监管机制有很多
+
+1. select机制：Windows Linux都有
+2. poll机制：只有Linux有，并且poll比select监管的数量更多，这俩的内部原理都是for循环，当监管的量巨大，然后头部新增了一个监管，就会等之前的都遍历完才可以重新监管，会有时间差
+3. epoll机制：只在Linux有，它给每一个监管对象都绑定了一个回调机制，一旦有相应，回调机制立刻发起提醒
+
+不同的平台有不同的监管机制，有兼容问题，可以通过`selectors`模块解决。它可以根据平台的不同自动选择对应的监管机制。
+
+### 5、异步IO
+
+`Asynchronous I/O`对比上面几个是效率最高的一个。
+
+本身python是没法做到异步IO的，需要使用其他模块或者框架
+
+- 模块：asyncio模块
+- 框架：sanic tronado twisted，都是异步框架，异步框架的优点就是速度快。
