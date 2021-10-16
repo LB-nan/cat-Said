@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Linux_Kali
-categories: 操作系统
+categories: Linux
 description: Linux
 keywords: Linux
 ---
