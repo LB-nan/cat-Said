@@ -18,7 +18,7 @@ Kali Linux预装了许多渗透测试软件，包括nmap 、Wireshark 、John th
 
 账号和密码都是kali
 
-###  2、配置
+### 2、配置
 
 #### 2.1 安装虚拟机open-vm-tools-desktop模块
 
@@ -28,7 +28,7 @@ sudo apt-get install open-vm-tools-desktop
 
 #### 2.2 设置中文
 
-```
+```base
 sudo apt-get install ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy
 sudo dpkg-reconfigure locales
 
@@ -40,7 +40,7 @@ sudo dpkg-reconfigure locales
 
 #### 2.3 安装python3的pip
 
-```
+```base
 sudo apt-get install python3-pip
 ```
 
@@ -48,7 +48,7 @@ sudo apt-get install python3-pip
 
 解决pip3 超时下载或失败
 
-```
+```base
 # python3的pip3默认源太慢，所以我们为了提升使用效果，通常选择国内源。
 # 其实方法很简单，脚本如下：
 mkdir -p ~/.pip
@@ -62,7 +62,7 @@ trusted-host=pypi.douban.com
 
 然后执行
 
-```
+```base
 sudo apt-get update
 pip3 -V
 ```
@@ -73,7 +73,7 @@ pip3 -V
 
 先执行这两步
 
-```
+```base
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
 sudo vim /etc/apt/sources.list
 
@@ -81,7 +81,7 @@ sudo vim /etc/apt/sources.list
 
 然后在打开的vim窗口里按`i`键，光标移动到最后复制下面内容，把阿里云的下面的两个的注释打开，然后按`ESC`，vim窗口下面的`insert`消失，输入`:wq`保存，然后重新下载pip3
 
-```
+```base
 #阿里云
 #deb http://mirrors.aliyun.com/kali kali-rolling main non-free contrib
 #deb-src http://mirrors.aliyun.com/kali kali-rolling main non-free contrib
@@ -98,7 +98,7 @@ sudo vim /etc/apt/sources.list
 
 保存完之后的一些其他操作
 
-```
+```base
 apt-get update 更新系统
 apt-get upgrade 升级已安装的所有软件包
 apt-get dist-upgrade 升级软件 会自动处理依赖包
@@ -115,7 +115,7 @@ sudo 使用特权 root权限
 2. `passwd`：修改密码
 3. `passwd root`：修改root用户密码
 4. `date`：显示系统日期
-5. `sudo `：后门加命令就可以以管理员权限执行
+5. `sudo`：后面加命令就可以以管理员权限执行
 6. `apt-get update`：更新软件列表，会访问源列表里的每个网址，并读取软件列表，然后保存在本地电脑，在软件包管理器里看到的软件列表都是通过update命令更新的
 7. `apt-get upgrade`：更新软件，这个命令会把下载的软件列表里的软件与本地安装的软件对比，如果反向本地安装的版本低，就会提示更新
 8. `apt-get dist-upgrade`：更新软件，`upgrade`在更新的时候如果发现有其他依赖受到影响就不会更新，而`dist-upgrade`会去尝试更新，所以`dist-upgrade`是会有点风险的
@@ -166,7 +166,7 @@ sudo 使用特权 root权限
 
 1. `cd`：移动目录，比如`cd ..` 退回上一级
 2. `mkdir test`：创建一个test文件夹
-3. `mkdir -p `test/t/t/t：递归创建文件夹
+3. `mkdir -p`test/t/t/t：递归创建文件夹
 4. `touch t.txt`：创建一个t.txt文件
 5. `cp`：复制命令，如`cp t.txt t1.txt`
 6. `mv`：移动命令，如`mv t1.txt t2.txt`，相当于给t1改名
