@@ -322,3 +322,93 @@ useradd -r -m -s /bin/bash test
 su -root：切换到root用户
 su 用户名：切换到普通用户
 ```
+
+
+### 9、系统管理
+
+1. `top`：查看正在执行的程序信息
+2. `ps -ef`：查看所有进程信息
+3. `ps -ef | grep tomcat`：查找指定进程
+4. `kali -9 id`：杀死进程，id是进程id
+5. `env`：环境变量
+6. `echo $PATH`：查看系统变量
+7. `hostname`：查看主机名
+8. `history`：查看历史命令
+
+### 10、查看磁盘信息
+
+1. `df`：默认不带单位，挂载点，总容量、已用、可用
+2. `df -h`：友好显示(带单位)，很多命令的友好显示都是`-h`
+
+### 11、查看内存信息
+
+1. `free`：默认以KB为单位，总容量、已用、可用、缓存大小
+2. `free -m`：以MB为单位
+3. `free -h`：上面两种都不带单位，只显示数值，这个会带单位
+
+### 12、查看环境变量
+
+1. `echo $JAVA_HOME`：查看Java环境变量
+2. `echo $PATH | grep jdk`：查看jdk
+
+### 13、开机自启
+
+很多程序都需要开机自启，比如tomcat\mysql\nginx等
+
+在`etc/rc.d/rc.local`文件中加入开启要自动执行的程序
+
+```bash
+vim /etc/rc.d/rc.local
+
+#挂载一个windows网络共享
+mount -t smbfs -o username=user,password=pass //WinClient/share /mnt/share 
+```
+
+### 14、修改网卡配置
+
+```bash
+vi /etc/network/interfaces
+
+auto eth0 #指定网卡，根据ifconfig结果修改
+iface eth0 inet static #启动静态ip
+address 192.168.0.66  # 设置静态ip
+netmask 255.255.255.0  # 子网掩码
+gateway 192.168.0.1   # 指定网关
+
+# 重启网络
+service networking resteat
+# 或者
+systemctl restart networking
+
+# 设置临时ip
+ifconfig eth0 192.168.0.33
+```
+
+### 15、修改网卡DNS服务器
+
+```bash
+vi /etc/resovl.conf
+nameserver 114.114.114.114
+
+# 重启网卡 有时候重启才生效
+service networking restart
+```
+
+### 16、服务相关
+
+```bash
+# 启动apache2服务器
+/etc/init.d/apache2 start
+
+# 打开
+/etc/init.d/apache2 start
+# 重启
+/etc/init.d/apache2 stop
+
+# 启动网卡
+/etc/init.d/network start
+
+# 开启路由转发
+sudo su root
+sudo echo 1 > /proc/sys/net/ipv4/ip_forward
+```
