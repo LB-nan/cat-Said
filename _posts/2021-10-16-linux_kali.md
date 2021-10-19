@@ -248,3 +248,77 @@ vi编辑器的使用
 9. 撤销操作，`u`，在命令模式下按`u`可以执行撤销
 
 vi和vim的区别不太大，在vim里面写的代码会高亮。
+
+### 7、文件搜索
+
+1. `find / -name file1`：从`/`开始进入根文件系统搜索文件和目录
+2. `find / -user user1`：搜索用户user1的文件和目录
+3. `find /home/user1 -name *.bin`在目录`/home/user1`：中搜索带有`.bin`结尾的文件
+4. `find /usr/bin -type f -atime +100`：搜索在过去100天内未被使用的执行文件
+5. `find /usr/bin -type f -mtime -10`：搜索在10天内未被创建或修改过的文件
+6. `find .-name'.php' -mmin -30`：查找最近30分钟内修改的当前目录下的'.php'文件
+7. `find .-name '.php' -mtime 0`：查找最近24小时修改的当前目录下的.php文件
+8. `find .-name '*.inc' -mtime 0 -ls`：查找最近24小时修改的当前目录下的.php文件，并列出详细信息
+9. `find . -type -mtime 1`：查找当前目录下，最近24-48小时内修改过的常规文件
+10. `find . -type -mtime +1`：查找当前目录下，最近一天前修改过的常规文件
+
+上面的一些参数的具体含义如下
+
+1. `-atime`：文件访问时间
+2. `-ctime`：文件创建时间
+3. `-mtime`：文件修改时间
+4. `-mtime n`：n为数字，意思为在n天之前的‘一天之内’被更改过内容的文件
+5. `-mtime +n`：列出在n天之前，不含n天本身被更改过内容的文件
+6. `-mtime -n`：列出在n天之内，含n天本身，被更改过内容的文件名
+7. `-type f`：代表一个普通格式的文件 二进制文件
+8. `-type d`：代表文件夹
+
+其他一些搜索操作
+
+1. `find / -name *.rpm -exec chmod 755 '{}'`：搜索以‘.rpm’结尾的文件并定义其权限
+2. `find / -xdev -name *.rpm`：搜索以‘.rpm’结尾的文件，忽略光驱、捷盘等可移动设备
+3. `locate *.ps`：寻找以‘.ps’结尾的文件
+4. `whereis halt`：显示一个二进制文件、源码或man的位置
+5. `which halt`：显示一个二进制文件或可执行文件的完整路径
+6. `grep kali /etc/passwd grep`：关键词搜索
+7. `find / -name 文件名 2>/dev/null`：搜索某个文件/文件夹 屏蔽出错信息
+
+### 8、用户和群组
+
+创建和修改用户组,都需要用到`sudo`管理员权限
+
+1. `groupadd group_name`：创建一个新用户组
+2. `groupdel group_name`：删除一个用户组
+3. `cat /etc/group | grep group_name`
+4. `usermod -a -G m k1`：`-G m k1`把用户k1附加到m组，`-a`是保留原来的组
+
+查看用户id/组
+
+```base
+<!-- m1 是用户名 -->
+id m1
+```
+
+创建用户的目录
+
+1. `useradd test`：创建一个用户叫test
+2. `passwd test`：设置它的密码为 test
+
+创建以及分配目录
+
+```bash
+useradd -r -m -s /bin/bash test
+```
+
+参数的意思：
+
+- `-r`：建立系统账号
+- `-m`：自动建立用户的登入目录
+- `-s /bin/bash`：指定用户登入后所使用的shell
+
+切换用户：
+
+```bash
+su -root：切换到root用户
+su 用户名：切换到普通用户
+```
