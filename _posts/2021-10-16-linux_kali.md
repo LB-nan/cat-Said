@@ -412,3 +412,129 @@ service networking restart
 sudo su root
 sudo echo 1 > /proc/sys/net/ipv4/ip_forward
 ```
+### 17、常用网络命令
+
+网络和监控命令类似于这些： hostname, ping, ifconfig, iwconfig, netstat, nslookup, traceroute, finger, telnet, ethtool 用于查看 linux 服务器 ip 地址，管理服务器网络配置，通过 telnet 和 ethernet 建立与 linux 之间的网络链接，查看 linux 的服务器信息等。
+
+1. hostname：查看主机名
+2. ping：用于测试网络是不是通
+3. ifconfig：网卡信息
+4. iwconfig：用于配置或获取无线网络设备信息
+5. netstat：命令用于显示各种网络相关信息，如网络连接，路由表，接口状态 (Interface Statistics)，masquerade 连接，多播成员 (Multicast Memberships) 等等。ps：LISTEN和LISTENING的状态只有用-a或者-l才能看到
+   1. -a (all)：显示所有选项，默认不显示listen相关
+   2. -t(tcp)：仅显示tcp相关选项
+   3. -u(udp)：仅显示udp相关
+   4. -n：拒绝显示别名，能显示数字的全部转化为数字
+   5. -l：仅列出有在listen的服务状态
+   6. -p：显示建立相关链接的程序名
+   7. -r：显示路由信息，路由表
+   8. -e：显示扩展信息，例如uid
+   9. -s：按各个协议进行统计
+   10. -c：每隔一个固定时间，执行该netstat命令
+
+常用命令：
+
+1. netstat -ano：查看本机所有开放端口
+2. netstat -an：查看当前所有已连接端口
+3. netstat -nlpt：查看当前所有的tcp端口
+4. netstat -nlpu：查看当前所有的udp端口
+5. netstat -nlpt | grep 80：查看所有的80端口使用情况
+6. netstat -Intup：查看所有的tcp和udp端口
+
+
+
+`nslookup`：查询dns记录
+
+```bash
+nslookup -qt=type domain [dns-server]
+```
+
+其中`type`可以是以下类型
+
+```txt
+A 地址记录
+AAAA 地址记录
+AFSDB Andrew文件系统数据库服务器记录
+ATMA ATM地址记录
+CNAME 别名记录
+HINFO 硬件配置记录，包括CPU、操作系统信息
+ISDN 域名对应的ISDN号码
+MB 存放指定邮箱的服务器
+MG 邮件组记录
+MINFO 邮件组和邮箱的信息记录
+MR 改名的邮箱记录
+MX 邮件服务器记录
+NS 名字服务器记录
+PTR 反向记录
+RP 负责人记录
+RT 路由穿透记录
+SRV TCP服务器信息记录
+TXT 域名对应的文本信息
+X25 域名对应的X.25地址记录
+```
+
+curl：是一个利用URL语法在命令行下工作的文件传输工具
+
+```bash
+# 不带参数 就是发get请求
+curl https://www.example.com
+
+# 其他参数看：http://www.ruanyifeng.com/blog/2019/09/curl-reference.html
+```
+
+`wget`：是Linux中的一个下载文件的工具
+
+```
+wget [选项]... [URL]...
+```
+
+`traceroute`：是用来检测发出数据包的主机到目标主机之间所经过的网关数量的工具，traceroute的原理是试图以最小的TTL（存活时间）发出探测包来跟踪数据包到达目标主机所经过的网关，然后监听一个来自网关ICMP的应答。发送数据包的大小默认为38个字节。
+
+有以下的参数：
+
+```txt
+-d 使用Socket层级的排错功能。
+-f 设置第一个检测数据包的存活数值TTL的大小。
+-F 设置勿离断位。
+-g 设置来源路由网关，最多可设置8个。
+-i 使用指定的网络界面送出数据包。
+-I 使用ICMP回应取代UDP资料信息。
+-m 设置检测数据包的最大存活数值TTL的大小。
+-n 直接使用IP地址而非主机名称。
+-p 设置UDP传输协议的通信端口。
+-r 忽略普通的Routing Table，直接将数据包送到远端主机上。
+-s 设置本地主机送出数据包的IP地址。
+-t 设置检测数据包的TOS数值。
+-v 详细显示指令的执行过程。
+-w 设置等待远端主机回报的时间。
+
+-x 开启或关闭数据包的正确性检验。
+```
+
+`telnet`：用于远端登入，多数用于检测某个端口是否开放
+
+```bash
+telnet url 80
+```
+
+`Finger`：Finger是一种用户信息分享服务。它工作在TCP 79端口，可以用来公开用户的特定信息。Nmap的finger的脚本可以向Finger服务器发送请求，查询并获取用户的相关信息，如登录名、用户名、TTY类型、登录时间等。
+
+`ethtool`：是用于查询及设置网卡参数的命令
+
+### 18、防火墙iptables
+
+```bash
+# 查看防火墙规则
+iptalbes -L
+# 清除规则
+iptables -F
+# centOS关闭防火墙 
+sudo /etc/init.d/iptables stop
+sudo service iptables stop
+
+# kali关闭需要安装下面的
+# 安装：apt-get install ufw
+#关闭：ufw disable # To disable the firewall
+#开启：ufw enable # To enable the firewall
+```
+
