@@ -323,7 +323,6 @@ su -root：切换到root用户
 su 用户名：切换到普通用户
 ```
 
-
 ### 9、系统管理
 
 1. `top`：查看正在执行的程序信息
@@ -412,6 +411,7 @@ service networking restart
 sudo su root
 sudo echo 1 > /proc/sys/net/ipv4/ip_forward
 ```
+
 ### 17、常用网络命令
 
 网络和监控命令类似于这些： hostname, ping, ifconfig, iwconfig, netstat, nslookup, traceroute, finger, telnet, ethtool 用于查看 linux 服务器 ip 地址，管理服务器网络配置，通过 telnet 和 ethernet 建立与 linux 之间的网络链接，查看 linux 的服务器信息等。
@@ -440,8 +440,6 @@ sudo echo 1 > /proc/sys/net/ipv4/ip_forward
 4. netstat -nlpu：查看当前所有的udp端口
 5. netstat -nlpt | grep 80：查看所有的80端口使用情况
 6. netstat -Intup：查看所有的tcp和udp端口
-
-
 
 `nslookup`：查询dns记录
 
@@ -484,7 +482,7 @@ curl https://www.example.com
 
 `wget`：是Linux中的一个下载文件的工具
 
-```
+```bash
 wget [选项]... [URL]...
 ```
 
@@ -537,4 +535,3 @@ sudo service iptables stop
 #关闭：ufw disable # To disable the firewall
 #开启：ufw enable # To enable the firewall
 ```
-
