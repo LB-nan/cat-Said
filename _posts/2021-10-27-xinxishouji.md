@@ -630,3 +630,67 @@ Nmap为端口探测最常用的方法，操作方便，输出结果非常直观
 2. 盘多多：`http://www.panduoduo.net/`
 3. 盘搜搜：`http://www.pansoso.com/`
 4. 盘搜：`http://www.pansou.com/`
+
+#### 18.6 社工库
+
+社工库就是拥有很多人的信息的库。
+
+社工库可以配合`www.reg007.com`这个网站一起使用。
+
+#### 18.7 JS敏感信息
+
+1. 网站的url连接写到js里面
+2. js的api接口 里面包含用户信息 比如 账号和密码
+
+获取js文件内的这些敏感信息可以通过下面的工具
+
+`jsfinder`：下载地址`https://gitee.com/kn1fes/JSFinder`
+
+用法：
+
+```python
+# 最基本用法
+python3 JSFinder.py -u http://www.mi.com
+    
+# 深度查询
+python3 JSFinder.py -u http://www.mi.com -d
+    
+# -ou和-os来指定保存url和子域名的文件名
+python3 JSFinder.py -u http://www.mi.com -d -ou mi_url.txt -os mi_subdomain.txt
+
+```
+
+`packer-Fuzzer`：一款针对webpack前端打包工具所构造的网站进行快速、高效安全的渗透测试扫描工具。
+
+地址：`https://gitee.com/ckz-code/Packer-Fuzzer?_from=gitee_search`
+
+本工具支持自动模糊提取对应目标站点的API以及API对应的参数内容，并支持对：未授权访问、敏感信息泄露、CORS、SQL注入、水平越权、弱口令、任意文件上传七大漏洞进行模糊高效的快速检测。在扫描结束之后，本工具还支持自动生成扫描报告，您可以选择便于分析的HTML版本以及较为正规的doc、pdf、txt版本。
+
+kali上面node环境安装：
+
+```bash
+sudo apt-get install nodejs && sudo apt-get install npm
+```
+
+使用：
+
+```bash
+# 克隆文件
+git clone https://gitee.com/keyboxdzd/Packer-Fuzzer.git
+# cd进去之后执行
+pip3 install -r requirements.txt
+python3 PackerFuzzer.py -u 域名
+```
+
+ `SecretFinder`：一款基于Python脚本的JavaScript敏感信息搜索工具
+
+地址 ：`https://gitee.com/mucn/SecretFinder`
+
+使用：
+
+```python
+python3 SecretFinder.py -i 域名 -e
+# 需要保存的话可以指定-o
+python3 SecretFinder.py -i https://targer.com/target.js -o result.html
+```
+
