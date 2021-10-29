@@ -343,4 +343,33 @@ python3 SecretFinder.py -i 域名 -e
 # 需要保存的话可以指定-o
 python3 SecretFinder.py -i https://targer.com/target.js -o result.html
 ```
+### 7、 SSL/TLS证书查询
 
+SSL/TLS证书通常包含域名、子域名和邮件地址等信息，结合证书中的信息，可以更快速地定位到目标资产，获取到更多目标资产的相关信息。
+
+查询SSL证书的一些在线网站：
+
+1. `https://myssl.com/`
+2. `https://crt.sh`
+3. `https://censys.io`
+4. `https://developers.facebook.com/tools/ct/`
+5. `https://google.com/transparencyreport/https/ct/`
+
+SSL证书的搜索引擎：
+
+1. `https://certdb.com/domain/github.com`
+2. `https://crt.sh/?Identity=%.moonsec.com`
+3. `https://censys.io/`
+4. GetDomainsBySSL.py
+
+可以用来查子域名
+
+### 8、查找厂商IP段
+
+`http://ipwhois.cnnic.net.cn/index.jsp`
+
+### 9、移动资产收集
+
+现在很多企业都有小程序，可以关注企业的微信公众号或者支付宝小程序，或关注运营相关人员，查看朋友圈，获取小程序。
+
+查找公众号网址：`https://weixin.sogou.com/`
