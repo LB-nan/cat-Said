@@ -117,3 +117,28 @@ sudo docker-compose up -d
 账号密码：`admin/arlpass`
 
 登录进去就是灯塔系统的界面。
+
+### 3、docker依赖拉取timeout
+
+docker默认源是国外源，所以国内拉取很慢或者直接报错
+
+解决方法：
+
+```bash
+sudo su -l root
+
+
+vi /etc/docker/daemon.json
+#添加如下网易镜像源
+{
+"registry-mirrors": ["http://hub-mirror.c.163.com"]
+}
+
+
+############# 或者
+vi /etc/sysconfig/docker
+#编辑OPTIONS，添加中国科技大学的镜像源
+OPTIONS='--selinux-enabled --log-driver=journald --registry mirror=https://docker.mirrors.ustc.edu.cn'
+```
+
+一定得切换root用户，因为docker的配置文件的权限是`rw-r-r`
