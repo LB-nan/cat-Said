@@ -67,7 +67,7 @@ keywords: 信息收集
 
 ![信息收集](/images/blog/img/4.png)
 
-####  5.1 大型项目的收集
+#### 5.1 大型项目的收集
 
 比如某个大型集团
 
@@ -237,7 +237,7 @@ sudo masscan 192.168.0.200 -p 1-65535 --rate=1000
 
 打开kali，进行使用，常用参数如:
 
-1. `nmap -sV 192.168.0.200` 
+1. `nmap -sV 192.168.0.200`
 2. `nmap -sT 192.168.0.200`
 3. `nmap -Pn -A -sC 192.168.0.200`
 4. `nmap -sU -sT -p 0-65535 192.168.0.200`
@@ -274,35 +274,35 @@ Nmap为端口探测最常用的方法，操作方便，输出结果非常直观
 
 第三方通用组件漏洞struts thinkphp  jboss  ganglia  zabbix
 
-1. 80 
+1. 80
 2. 80-89
 3. 8000-9090
 
-####  13.2 数据库类(扫描弱口令)
+#### 13.2 数据库类(扫描弱口令)
 
-1. 1433 MSSQL 
-2. 1521 Oracle 
-3. 3306 MySQL 
-4. 5432 PostgreSQL 
+1. 1433 MSSQL
+2. 1521 Oracle
+3. 3306 MySQL
+4. 5432 PostgreSQL
 
 #### 13.3 特殊服务类(未授权/命令执行类/漏洞)
 
 1. 443 SSL心脏滴血
 2. 873 Rsync未授权
-3. 5984 CouchDB http://xxx:5984/_utils/ 
+3. 5984 CouchDB `http://xxx:5984/_utils/`
 4. 6379 redis未授权
-5. 7001,7002 WebLogic默认弱口令，反序列 
-6. 9200,9300 elasticsearch 参考WooYun: 多玩某服务器ElasticSearch命令执行漏洞 
+5. 7001,7002 WebLogic默认弱口令，反序列
+6. 9200,9300 elasticsearch 参考WooYun: 多玩某服务器ElasticSearch命令执行漏洞
 7. 11211 memcache未授权访问
-8. 27017,27018 Mongodb未授权访问 
+8. 27017,27018 Mongodb未授权访问
 9. 50000 SAP命令执行
 10. 50070,50030 hadoop默认端口未授权访问
 
 #### 13.4 常用端口类(扫描弱口令/端口爆破)
 
-1. 21 ftp 
-2. 22 SSH 
-3. 23 Telnet 
+1. 21 ftp
+2. 22 SSH
+3. 23 Telnet
 4. 2601,2604 zebra路由，默认密码zebra
 5. 3389 远程桌面
 

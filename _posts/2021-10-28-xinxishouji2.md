@@ -110,7 +110,7 @@ keywords: 信息收集
 
    1. 扫描单个web服务 www.target.com：`python BBScan.py --host http://www.target.com`
 
-   2. 扫描www.target.com和www.target.com/28下的其他主机：`python BBScan.py --host www.target.com --network 28 `
+   2. 扫描www.target.com和www.target.com/28下的其他主机：`python BBScan.py --host www.target.com --network 28`
 
       1. –network 参数用于设置子网掩码，小公司设为28~30，中等规模公司设置26~28，大公司设为24~26
       2. 当然，尽量避免设为24，扫描过于耗时，除非是想在各SRC多刷几个漏洞。
@@ -126,9 +126,9 @@ keywords: 信息收集
 
    6. dirsearch：
 
-      1.  `https://gitee.com/Abaomianguan/dirsearch.git`,`unzip `
-      2.  `dirsearch.zip`,`python3 dirsearch.py -u `
-      3.  `http://m.scabjd.com/ -e * `
+      1. `https://gitee.com/Abaomianguan/dirsearch.git`,`unzip`
+      2. `dirsearch.zip`,`python3 dirsearch.py -u`
+      3. `http://m.scabjd.com/ -e *`
 
    7. gobuster：
 
@@ -155,7 +155,7 @@ keywords: 信息收集
    
    User-agent: baiduspider
    Disallow: /
-   ```   
+   ```
 
 2. crossdomain.xml：跨域策略文件，可以通过这个里面查询子域名，如`www.taobao.com/crossdomain.xml`
 
@@ -172,7 +172,7 @@ keywords: 信息收集
 
 3. sitemap.xml：XML网站地图协议，可以给搜索引擎用的，如：`http://www.xxwdzd.com/sitemap.xml`
 
-4. 后台目录：就是后台目录了 
+4. 后台目录：就是后台目录了
 
 5. 网站安装包
 
@@ -246,9 +246,9 @@ keywords: 信息收集
 
 更多的搜索方式参考资料：
 
-	1. `https://blog.csdn.net/qq_36119192/article/details/99690742`
-	2. `http://www.361way.com/github-hack/6284.html`
-	3. `https://docs.github.com/cn/github/searching-for-information-on-github/searching-code`
+ 1. `https://blog.csdn.net/qq_36119192/article/details/99690742`
+ 2. `http://www.361way.com/github-hack/6284.html`
+ 3. `https://docs.github.com/cn/github/searching-for-information-on-github/searching-code`
 
 #### 6.2 谷歌搜索
 
@@ -276,7 +276,7 @@ keywords: 信息收集
 
 #### 6.5 网盘搜索
 
-1. 凌云搜索：` https://www.lingfengyun.com/`
+1. 凌云搜索：`https://www.lingfengyun.com/`
 2. 盘多多：`http://www.panduoduo.net/`
 3. 盘搜搜：`http://www.pansoso.com/`
 4. 盘搜：`http://www.pansou.com/`
@@ -343,6 +343,7 @@ python3 SecretFinder.py -i 域名 -e
 # 需要保存的话可以指定-o
 python3 SecretFinder.py -i https://targer.com/target.js -o result.html
 ```
+
 ### 7、 SSL/TLS证书查询
 
 SSL/TLS证书通常包含域名、子域名和邮件地址等信息，结合证书中的信息，可以更快速地定位到目标资产，获取到更多目标资产的相关信息。

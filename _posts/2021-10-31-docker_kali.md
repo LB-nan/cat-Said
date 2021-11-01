@@ -96,7 +96,7 @@ docker-compose up -d
 
 然后cd进去：
 
-```
+```bash
 cd ARL/docker
 
 sudo service docker start

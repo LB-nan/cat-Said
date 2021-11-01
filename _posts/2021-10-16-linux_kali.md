@@ -535,6 +535,7 @@ sudo service iptables stop
 #关闭：ufw disable # To disable the firewall
 #开启：ufw enable # To enable the firewall
 ```
+
 ### 19、文件属性和权限设置
 
 查看文件的详细信息
@@ -556,7 +557,7 @@ ls -al
 
 #### 19.1 用户权限
 
-文件中`r w x - `的含义
+文件中`r w x -`的含义
 
 1. `r`：只读权限
 2. `w`：写权限
