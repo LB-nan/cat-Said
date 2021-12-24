@@ -110,3 +110,123 @@ if __name__ == '__main__':
     
 ```
 
+### 4、UA检测/伪装
+
+UA：User-Agent（请求载体的身份标识）
+
+UA检测：门户网站的服务器会检测对应请求的载体身体标识，如果检测到请求的载体身份标识是某一款浏览器，说明该请求是一个正常的请求；如果没检测到就说明该请求不正常(爬虫)，拒绝该次请求，不予响应。所以就需要UA伪装。
+
+UA伪装：让爬虫对应的请求载体身份标识伪装成某一款浏览器。
+
+假设有如下爬虫代码
+
+```python
+#!/usr/bin/env python3
+# -*- coding:utf8 -*-
+import requests
+
+if __name__ == "__main__":
+    url = "https://www.sogou.com/web"
+    kw = input('enter:')
+    params = {
+        "query": kw
+    }
+    res = requests.get(url=url, params=params)
+    page = res.text
+    with open(kw+'.html', 'w', encoding="utf-8") as f:
+        f.write(page)
+    print('ok!')
+
+```
+
+进行测试的时候，搜狗会返回如下内容：
+
+```html
+<div class="content-box">
+    <p class="p2">用户您好，我们的系统检测到您网络中存在异常访问请求。<br>此验证码用于确认这些请求是您的正常行为而不是自动程序发出的，需要您协助验证。</p>
+</div>
+```
+
+进行UA伪装：
+
+```python
+headers={
+  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
+}
+res = requests.get(url=url, params=params, headers=headers)
+page = res.text
+with open(kw+'.html', 'w', encoding="utf-8") as f:
+  f.write(page)
+
+```
+
+### 5、POST/GET请求爬取
+
+POST爬取百度翻译输入的接口，获取翻译的值
+
+```python
+#!/usr/bin/env python3
+# -*- coding:utf8 -*-
+import requests
+import json
+
+if __name__ == '__main__':
+    url = 'https://fanyi.baidu.com/sug'
+    text = input('请输入要翻译的单词：')
+    data = {
+        "kw": text
+    }
+    # UA伪装
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
+    }
+    res = requests.post(url=url, data=data, headers=headers)
+    res_json = res.json()
+    # 持久化存储
+    fp = open(text+'.txt', 'w', encoding='utf-8')
+    json.dump(res_json, fp=fp, ensure_ascii=False)
+
+    print('持久化存储完成，翻译结果是：',res_json['data'][0]['v'])
+
+```
+
+结果：
+
+```bash
+请输入要翻译的单词：cat
+持久化存储完成，翻译结果是： n. 猫; 猫科动物; 狠毒的女人; 爵士乐爱好者 vt. 把（锚）吊放在锚架上; 〈俚〉寻欢，宿娼
+```
+
+GET爬取豆瓣电影喜剧排行
+
+```python
+#!/usr/bin/env python3
+# -*- coding:utf8 -*-
+
+import requests
+import json
+
+if __name__ == '__main__':
+    url = 'https://movie.douban.com/j/chart/top_list'
+    params = {
+        'type': '24',
+        'interval_id': '100:90',
+        'action': '',
+        'start': "0",
+        'limit': "20"
+    }
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
+    }
+
+    res = requests.get(url=url, params=params, headers=headers)
+    res_json = res.json()
+    print(res_json)
+    fp = open('douban.json', 'w', encoding='utf-8')
+    json.dump(res_json, fp=fp, ensure_ascii=False)
+
+```
+
+
+
