@@ -83,6 +83,7 @@ requests模块是Python中原生的一款基于网络请求的模块，功能非
 1. 指定URL
 2. 发起请求
 3. 获取响应数据
+3. 数据解析
 4. 持久化存储
 
 安装：
@@ -228,5 +229,65 @@ if __name__ == '__main__':
 
 ```
 
+多页面数据组合爬取，爬取药监局化妆品行业的企业信息
 
+```python
+#!/usr/bin/env python3
+# -*- coding:utf8 -*-
+import requests
+
+if __name__ == '__main__':
+
+    url = 'http://scxk.nmpa.gov.cn:81/xk/'
+    url1 = 'http://scxk.nmpa.gov.cn:81/xk/itownet/portalAction.do?method=getXkzsList'
+    url2 = 'http://scxk.nmpa.gov.cn:81/xk/itownet/portalAction.do?method=getXkzsById'
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
+    }
+    data = {
+        'on': 'true',
+        'page': 1,
+        'pageSize': 15,
+        'productName': '',
+        'conditionType': 1,
+        'applyname': '',
+        'applysn': ''
+    }
+    res = requests.post(url=url1,data=data, headers=headers).json()
+    arr = res['list']
+    idarr = []
+    for i in arr:
+        idarr.append(i['ID'])
+
+    details = []
+    for id in idarr:
+        data2 = {
+            'id': id
+        }
+
+        detail = requests.post(url = url2, data=data2, headers=headers).json()
+        details.append(detail)
+
+    with open('hzp.txt', 'w', encoding='utf-8') as f:
+        for d in details:
+            f.write(str(d))
+    print(details)
+
+    print('over')
+
+```
+
+### 6、数据解析
+
+Python中解析数据的方法：
+
+1. 正则
+2. bs4
+3. xpath
+
+数据解析原理：
+
+1. 解析的局部的文本内容都会在标签之间或者标签对应的属性中进行存储
+2. 进行指定的标签定位
+3. 标签或者标签对应的属性中存储的数据值进行提取。
 
