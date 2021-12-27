@@ -291,3 +291,48 @@ Python中解析数据的方法：
 2. 进行指定的标签定位
 3. 标签或者标签对应的属性中存储的数据值进行提取。
 
+#### 6.1 bs4
+
+bs4数据解析的原理：
+
+1. 实例化一个beautifulSoup对象，并且将页面源码数据加载到对象中
+2. 通过调用beautifulSoup对象中相关的属性或者方法进行标签定位和数据提取
+
+使用前的环境安装：
+
+```bash
+pip install bs4
+pip install lxml
+```
+
+使用：
+
+```python
+from bs4 import BeautifulSoup
+# 对象的实例化有两种方法
+# 1. 将本地的html文档中的数据加载到该对象中
+# 2. 将互联网上获取的页面源码加载到该对象中
+if __name__ == '__main__':
+  # 将本地的html文件的数据加载到该对象中
+  fp = open('./test.html', 'r', encoding='utf-8')
+  # 互联网上获取数据
+  # page_text = requests.get(url).text
+  # soup = BeautifulSoup(page_text, 'lxml')
+  # 实例化的时候需要同时传入数据
+  soup = BeautifulSoup(fp, 'lxml')
+```
+
+用于数据解析的方法和属性：
+
+1. soup.tagName：返回数据中指定的标签的第一组内容，如`soup.a`返回第一组a标签及内容
+2. soup.find(tagName)：相当于`soup.tagName`
+   1. 根据class属性值定位tag：`soup.find('div', class_='c1')`
+   2. 根据id：`soup.find('div', id='id1')`
+   3. 根据attribute：`soup.find('div', attrs='a1')`
+3. soup.find_all()：返回的是一个列表：`find_all(name, attrs, recursive, text, limit, **kwargs)`
+4. soup.select()：使用css选择器进行定位，可以使用class或者id，返回的是一个列表：`soup.select('.c1')`
+5. 获取标签之间的文本数据：
+   1. soup.a.text：可以获取标签下的所有子节点的文本节点内容
+   2. soup.a.string：只可以获取标签下的文本节点内容，不可以获取子节点的文本节点内容
+   3. soup.a.get_text()：可以获取标签下的所有子节点的文本节点内容
+6. 获取标签之间的属性值：`soup.a['href']`
