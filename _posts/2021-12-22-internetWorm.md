@@ -336,3 +336,109 @@ if __name__ == '__main__':
    2. soup.a.string：只可以获取标签下的文本节点内容，不可以获取子节点的文本节点内容
    3. soup.a.get_text()：可以获取标签下的所有子节点的文本节点内容
 6. 获取标签之间的属性值：`soup.a['href']`
+
+#### 6.2 xpath
+
+最常用且最便捷高效的一种解析方式。
+
+xpath解析原理：
+
+1. 实例化一个etree对象，且需要将解析的页面源码加载到该对象中
+2. 调用etree对象中的xpath方法结合xpath表达式实现标签的定位和内容的捕获
+
+环境安装：
+
+```bash
+pip install lxml
+```
+
+实例化：
+
+```python
+from lxml import etree
+# 本地HTML文档
+etree.parse(filepath)
+
+# 互联网获取的源码
+page_text = requests.get(url).text
+etree.HTML(page_text)
+```
+
+xpath demo：
+
+```python
+#!/usr/bin/env python3
+# -*- coding:utf8 -*-
+from lxml import etree
+ 
+if __name__ == '__main__':
+		# 报错：lxml.etree.XMLSyntaxError 可以加下面的代码解决
+    parser = etree.HTMLParser(encoding='utf-8')
+    tree = etree.parse('hzp.html',parser=parser)
+    # tree = etree.parse('hzp.html')
+    print(tree)
+    # xpath()：接受css选择器进行匹配数据，返回一个列表
+    # /html/head/div     '/'的意思是'>'  可以写成 /html//div  //div
+    r = tree.xpath('/html/head/titie')
+    print(r)
+
+```
+
+可以根据属性进行精确选择
+
+```python
+r = tree.xpath('//div[@class="c1"]')
+```
+
+可以进行索引定位，获取class为'cn'的div下的第3个p标签
+
+```python
+r = tree.xpath('//div[@class="cn"]/p[3]') # 这里的索引是从1开始
+```
+
+获取标签的文本值
+
+```python
+r = tree.xpath('//div[@class="cn"]/p[3]/a/text()') # 返回的是一个列表
+t = r[0]
+```
+
+获取标签的属性的值，获取img的src属性
+
+```python
+r = tree.xpath('//div[@class='c2']/img/@src')[0]
+```
+
+爬取58同城上面北京昌平二手房价格demo
+
+```python
+#!/usr/bin/env python3
+# -*- coding:utf8 -*-
+import requests
+from lxml import etree
+
+if __name__ == '__main__':
+
+    parser = etree.HTMLParser(encoding='utf-8')
+    url = 'https://bj.58.com/changping/ershoufang/'
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
+    }
+    page_text = requests.get(url=url, headers=headers).text
+    tree = etree.HTML(page_text,parser=parser)
+    # 拿到每一项的div父级
+    divList = tree.xpath('//section[@class="list"]/div[@class="property"]')
+    for div in divList:
+        title = div.xpath('.//div[@class="property-content"]//h3/text()')[0]
+        priceInfo = div.xpath('.//div[@class="property-content"]//p[@class="property-price-total"]/span/text()')
+        obj = {
+            "名称": title,
+            "价格": priceInfo[0]+ priceInfo[1]
+        }
+        with open('58昌平二手房.txt', 'a', encoding='utf-8') as f:
+            f.write(str(obj) + '\n')
+    print('爬取完毕')
+```
+
+
+
