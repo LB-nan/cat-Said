@@ -29,6 +29,16 @@ Vue.js 是采用**数据劫持**结合**发布者-订阅者模式**的方式，�
 - 在vue2.x中使用Object.defineProperty()进行的数据劫持，缺点是对于数组而言，大部分操作是拦截不到的，只是vue在内部重写了数组的函数解决了这个问题
 - 在vue3.x中使用了proxy进行数据劫持，解决了2.x拦截不到数组的问题，缺点是兼容性问题，因为proxy是ES6的标准
 
+具体流程:
+
+1. observer劫持，需要ovserver的数据对象进行递归遍历，包括子属性对象的属性，都加上setter和getter，当这个对象赋值就可以监听到数据变化
+2. compile解析，将模板中的变量替换成数据，然后初始化渲染页面视图，并将每个节点绑定一个订阅，当数据发送变动，就会收到通知，然后更新视图
+3. watcher监听，它是observer和compile的通信桥梁，监听着dep订阅器，当observer监听到属性变化(setter)，通知给dep订阅器，dep就会通知watcher发生了变化，然后watcher去触发自己的update()方法告诉VDOM哪个变量发生改变，去重新走diff算法，diff算法会生成一颗新的DOM树，对比两棵树的不同，有不同的就替换，触发updateChildren()方法，去触发视图更新
+
+#### 2.1 v-model
+
+v-model在vue2.x中是双向绑定的(一般用来收集用户输入的数据)，父子组件数据双向绑定，父组件修改了数据会影响子组件，反过来亦可 从这个意义上，v-model能做的事也可以通过props或$emit来完成，在表单中v-model原理其实就是给input事件绑定oninput事件，触发就会立刻调用底层对象对应的setter方法 改变data里的属性的值 从而实现双向数据绑定
+
 ### 3、生命周期
 
 1. beforeCreate(创建前)：数据观测和初始化事件还未开始，此时 data 的响应式追踪、event/watcher 都还没有被设置，也就是说不能访问到data、computed、watch、methods上的方法和数据。
@@ -42,7 +52,32 @@ Vue.js 是采用**数据劫持**结合**发布者-订阅者模式**的方式，�
 
 一般created/beforeMount/mounted 皆可 正常获取在 created 里面即可，而且服务端渲染只支持created；如果涉及到需要页面加载完成之后(DOM操作)的就用 mounted。
 
+异步操作的话在created中操作更好：
+
+- 能更快获取到服务端数据，减少页面加载时间，用户体验更好
+- SSR不支持 beforeMount 、mounted 钩子函数，放在 created 中有助于一致性。
+
 另外还有 `keep-alive` 独有的生命周期，分别为 `activated` 和 `deactivated` 。用 `keep-alive` 包裹的组件在切换时不会进行销毁，而是缓存到内存中并执行 `deactivated` 钩子函数，命中缓存渲染后会执行 `activated` 钩子函数。
+
+#### 3.1 父子组件生命周期顺序
+
+加载渲染过程：
+
+1. 父组件 beforeCreate
+2. 父组件 created
+3. 父组件 beforeMount
+4. 子组件 beforeCreate
+5. 子组件 created
+6. 子组件 beforeMound
+7. 子组件 mounted
+8. 父组件 mounted
+
+更新过程：
+
+1. 父组件 beforeUpdate
+2. 子组件 beforeUpdate
+3. 子组件 updated
+4. 父组件 updated
 
 ### 4、常见的事件修饰符
 
