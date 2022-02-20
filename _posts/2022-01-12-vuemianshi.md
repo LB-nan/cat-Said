@@ -31,7 +31,7 @@ Vue.js 是采用**数据劫持**结合**发布者-订阅者模式**的方式，�
 
 具体流程:
 
-1. observer劫持，需要ovserver的数据对象进行递归遍历，包括子属性对象的属性，都加上setter和getter，当这个对象赋值就可以监听到数据变化
+1. observer劫持，需要observer的数据对象进行递归遍历，包括子属性对象的属性，都加上setter和getter，当这个对象赋值就可以监听到数据变化
 2. compile解析，将模板中的变量替换成数据，然后初始化渲染页面视图，并将每个节点绑定一个订阅，当数据发送变动，就会收到通知，然后更新视图
 3. watcher监听，它是observer和compile的通信桥梁，监听着dep订阅器，当observer监听到属性变化(setter)，通知给dep订阅器，dep就会通知watcher发生了变化，然后watcher去触发自己的update()方法告诉VDOM哪个变量发生改变，去重新走diff算法，diff算法会生成一颗新的DOM树，对比两棵树的不同，有不同的就替换，触发updateChildren()方法，去触发视图更新
 
@@ -50,7 +50,7 @@ v-model在vue2.x中是双向绑定的(一般用来收集用户输入的数据)�
 8. beforeDestory(销毁前)：实例销毁之前调用。这一步，实例仍然完全可用，`this` 仍能获取到实例。
 9. destroyed(销毁后)：实例销毁后调用，调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。该钩子在服务端渲染期间不被调用。
 
-一般created/beforeMount/mounted 皆可 正常获取在 created 里面即可，而且服务端渲染只支持created；如果涉及到需要页面加载完成之后(DOM操作)的就用 mounted。
+数据请求操作一般created/beforeMount/mounted 皆可 正常获取在 created 里面即可，而且服务端渲染只支持created；如果涉及到需要页面加载完成之后(DOM操作)的就用 mounted。
 
 异步操作的话在created中操作更好：
 
