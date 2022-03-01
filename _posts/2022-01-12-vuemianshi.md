@@ -26,14 +26,51 @@ Vue.js 是采用**数据劫持**结合**发布者-订阅者模式**的方式，�
 
 数据劫持：
 
-- 在vue2.x中使用Object.defineProperty()进行的数据劫持，缺点是对于数组而言，大部分操作是拦截不到的，只是vue在内部重写了数组的函数解决了这个问题
+- 在vue2.x中使用Object.defineProperty()进行的数据劫持，缺点是对于数组而言，大部分操作是拦截不到的，只是vue在内部重写了数组的函数解决了这个问题，对于对象而言，新增一个对象是检测不到的
 - 在vue3.x中使用了proxy进行数据劫持，解决了2.x拦截不到数组的问题，缺点是兼容性问题，因为proxy是ES6的标准
 
 具体流程:
 
 1. observer劫持，需要observer的数据对象进行递归遍历，包括子属性对象的属性，都加上setter和getter，当这个对象赋值就可以监听到数据变化
+   1. 监听数据的变化：getter => 收集依赖 => setter => 触发依赖
+   2. 收集依赖到一个数组中，就是`dep`用来存储收集的依赖，收集依赖就是说当属性发送变化后通知谁
+   3. 然后在set触发时，循环把dep收集到的依赖触发
+   4. 依赖触发就通知到了`watcher`
+
 2. compile解析，将模板中的变量替换成数据，然后初始化渲染页面视图，并将每个节点绑定一个订阅，当数据发送变动，就会收到通知，然后更新视图
 3. watcher监听，它是observer和compile的通信桥梁，监听着dep订阅器，当observer监听到属性变化(setter)，通知给dep订阅器，dep就会通知watcher发生了变化，然后watcher去触发自己的update()方法告诉VDOM哪个变量发生改变，去重新走diff算法，diff算法会生成一颗新的DOM树，对比两棵树的不同，有不同的就替换，触发updateChildren()方法，去触发视图更新
+
+vue 中对这个数组问题的解决方案：
+
+1. 先把原生 `Array` 的原型方法继承下来。
+2. 对继承后的对象使用 `Object.defineProperty` 做一些拦截操作。
+3. 把加工后可以被拦截的原型，赋值到需要被拦截的 `Array` 类型的数据的原型上。
+
+```js
+;[
+  'push',
+  'pop',
+  'shift',
+  'unshift',
+  'splice',
+  'sort',
+  'reverse'
+]
+.forEach(function (method) {
+  // cache original method
+  const original = arrayProto[method]
+
+  Object.defineProperty(arrayMethods, method, {
+    value: function mutator (...args) {
+      console.log(method) // 打印数组方法
+      return original.apply(this, args)
+    },
+    enumerable: false,
+    writable: true,
+    configurable: true
+  })
+})
+```
 
 #### 2.1 v-model
 
@@ -462,10 +499,14 @@ const store = new Vuex.Store({
 
 nextTick 不仅是 Vue 内部的异步队列的调用方法，同时也允许开发者在实际项目中使用这个方法来满足实际应用中对 DOM 更新数据时机的后续逻辑处理
 
+nextTick()内部会有一些兼容性判断`if (typeof Promise !== 'undefined' && isNative(Promise))`判断是否支持promise，不支持就使用降级的方案，依次是：setImmediate、MessageChannel、setTimeout.
+
 使用：
 
 - 当数据变化后执行某个操作，而这个操作需要使用随数据变化而变化的DOM结构的时候，需要把方法写在`nextTick()`的回调中
-- 在vue生命周期中，如果需要在created()钩子里进行DOM操作，也需要放在`nextTick()`的回调函数里
+- nextTick是Vue提供的一个全局API由于vue的异步更新策略导致我们对数据的修改不会立刻体现在dom变化上，此时如果想要立即获取更新后的dom状态，就需要使用这个方法
+- 在vue生命周期中，如果需要在created()钩子里进行DOM操作，也需要放在`nextTick()`的回调函数里，
+- Vue在更新DOM时是异步执行的。只要侦听到数据变化，Vue将开启一个队列，并缓冲在同一事件循环中发 生的所有数据变更。如果同一个watcher被多次触发，只会被推入到队列中一次。这种在缓冲时去除重复数据对于避免不必要的计算和DOM操作是非常重要的。nextTick方法会在队列中加入一个回调函数，确保该函数在前面的dom操作完成后才调用。
 
 ### 19、自定义指令
 
